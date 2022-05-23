@@ -1,4 +1,5 @@
 module.exports = {
+    lintOnSave: false,
     outputDir: '../main/resources/static/tools/22',
     //indexPath: '../src/main/resources/static/index.html', // 같은 폴더에 안된다고 말 뜸 사용하면
     pages: {

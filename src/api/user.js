@@ -1,7 +1,11 @@
 import axios from './index'
 
-function registerUser(userData) {
+function signUp(userData) {
     return axios.post('/accounts/signup', userData)
 }
 
-export { registerUser }
+function signIn(userData) {
+    return axios.post('/accounts/signin', userData)
+}
+
+export { signUp, signIn }

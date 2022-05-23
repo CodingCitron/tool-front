@@ -4,13 +4,13 @@ const routes = [
     {
         path: '/authoringtool/22',
         alias: ['/', '/authoringtool/22/signin'],
-        name: 'SignIn',
+        name: 'signin',
         component: () =>
             import(/* webpackChunkName: "Home" */ '../views/SignInPage.vue'),
     },
     {
         path: '/authoringtool/22/signup',
-        name: 'SignUp',
+        name: 'signup',
         component: () =>
             import(/* webpackChunkName: "Home" */ '../views/SignUpPage.vue'),
     },

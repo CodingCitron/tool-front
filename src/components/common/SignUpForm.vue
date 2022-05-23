@@ -1,29 +1,16 @@
 <template>
-    <form @submit.prevent="onSubmit">
-        <div class="mb-3">
+    <form>
+        <div class="mb-3" >
             <label for="name" class="form-label">이름</label>
             <input type="text" class="form-control" id="name" v-model="name" placeholder="급여 지급 통장의 이름과 동일하게 입력해 주세요.">
         </div>
         <div class="mb-3">
             <label for="tel" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel" v-model="tel" placeholder="아이디로 사용됩니다.">
+            <input type="text" class="form-control" id="tel" v-model="tel" placeholder="아이디로 사용됩니다. ex)01012345678">
         </div>
          <div class="mb-3">
             <label for="birth" class="form-label">생년월일</label>
             <input type="text" class="form-control" id="birth" v-model="birth" placeholder="19900101">
-        </div>
-        <div class="mb-3">
-            <div>
-              <label class="form-label">그룹</label>
-            </div>
-            <select class="form-select" aria-label="Default select example" v-model="group">
-              <option selected>선택 안함</option>
-              <option value="ufit">유핏</option>
-              <option value="megastudy">메가스터디</option>
-              <option value="smsoft">세명소프트</option>
-              <option value="edutech">에듀테크</option>
-              <option value="saltluxIno">솔트룩스 이노베이션</option>
-            </select>
         </div>
         <div class="mb-3">
             <div>
@@ -69,14 +56,15 @@
             <input type="text" class="form-control" id="recommender" v-model="recommender" placeholder="추천인 전화번호 입력">
         </div>
         <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">가입하기</button>
+            <button type="submit" class="btn btn-primary" @click.prevent="onSubmit">가입하기</button>
         </div>
     </form>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { registerUser } from '../../api/user.js'
+import { signUp } from '../../api/user.js'
+import { useRouter } from 'vue-router'
 
 export default {
   setup(){
@@ -86,10 +74,11 @@ export default {
     sex = ref(''),
     device = ref(''),
     keyInterface = ref(''),
-    group = ref('선택 안함'),
     recommender = ref('')
 
-    const onSubmit = async () => {
+    const router = useRouter()
+
+    const onSubmit = () => {
         const userData = {
             name: name.value,
             tel: tel.value,
@@ -97,16 +86,28 @@ export default {
             sex: sex.value,
             device: device.value,
             keyInterface: keyInterface.value,
-            group: group.value,
             recommender: recommender.value
         }
-        console.log(userData)
 
-        const data = await registerUser(userData)
-        console.log(data)
-        initForm()
+        const res = signUp(userData)
+
+        res.then(() => {
+          this.$store.commit("login", res.data);
+          router.push({ name: 'signin' })
+        }).catch(err => {
+          
+        })
+
+        //initForm()
     }
 
+    /*
+    const validation = () => {
+
+    }
+    */
+
+    /*
     const initForm = () => {
       name.value = ''
       tel.value = ''
@@ -115,6 +116,7 @@ export default {
       device.value = ''
       keyInterface.value = ''
     }
+    */
 
     return {
       name,
@@ -123,7 +125,6 @@ export default {
       sex,
       device,
       keyInterface,
-      group,
       recommender,
       onSubmit
     }
