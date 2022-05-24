@@ -7,7 +7,7 @@
           <label for="input">원문 입력</label>
         </div>
         <div class="flex-grow-1">
-          <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input"></textarea>
+          <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="originalText"></textarea>
         </div>
       </div>
       <div class="form-floating mb-3 d-flex">
@@ -15,62 +15,189 @@
           <label for="paste">수집 문장</label>
         </div>
         <div class="flex-grow-1">
-          <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste"></textarea>
+          <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errorText"></textarea>
         </div>
       </div>
       <div class="form-floating mb-3 d-flex flex-column">
         <div class="d-flex justify-content-end mb-2 text-secondary">
-          <span class="ps-1 pe-1">0</span>
+          <span class="ps-1 pe-1">{{ originalText.length }}</span>
           <span>|</span>
-          <button class="text-button ps-1 pe-1 text-secondary">지우기</button>
+          <span class="ps-1 pe-1">{{ errorText.length }}</span>
+          <span>|</span>
+          <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
         </div>
         <div class="d-flex justify-content-end">
-          <button class="btn btn-success">제출하기</button>
+          <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
         </div>
       </div>
     </section>
     <section>
       <div class="mb-4 d-flex justify-content-between">
-        <div>
-          <button type="button" class="btn btn-primary me-2">CSV 파일</button>
-          <button type="button" class="btn btn-primary">제출한 글 목록</button>
+        <div class="d-flex tab-button">
+          <TabItem 
+            v-for="item in tab"
+            v-bind="item" :key="item.id"
+            :value="current"
+            @input="changeTab"
+            />
         </div>
         <div>
             <input type="file" class="form-control" @change="readFile">
         </div>
       </div>
-      <div class="form-floating bg-light background">
-        
+      <div>
+        <div class="form-floating bg-light background p-4" :class="currentId.id === 1 ? 'active' : 'hidden'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th v-for="(item, i) in tableHeader" >{{ item }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(line, i) in tableBody" >
+                <td v-for="(item, i) in line">{{ item }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="form-floating bg-light background p-4" :class="currentId.id === 2 ? 'active' : 'hidden'">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>원문</th>
+                  <th>수집 문장</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, i) in submittedText">
+                  <td>{{ i }}</td>
+                  <td>{{ item.originalText }}</td>
+                  <td>{{ item.errorText }}</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-export default {
-  setup(){
-    const readFile = e => {
-      const file = e.target.files[0]
-      console.log(file)
-      const reader = new FileReader()
-      reader.onload = function(e){
-        // Entire file
-        console.log(e.target.result)
+import { csvToJSON } from '@/util'
+import { ref } from '@vue/reactivity'
+import { computed } from '@vue/runtime-core'
+import { scrape } from '@/api/work'
+import TabItem from '@/components/common/TabItem'
 
-        // By lines
-        var lines = e.result.split('\n')
-        for(var line = 0; line < lines.length; line++){
-          console.log(lines[line])
-        }
+export default {
+  components: {
+    TabItem,
+  },
+
+  setup(){
+    const current = ref(1),
+    tab = ref([
+      {
+        id: 1,
+        label: 'CSV 파일',
+      },
+      {
+        id: 2,
+        label: '제출한 글 목록',
+      }
+    ]),
+    tableHeader = ref([]),
+    tableBody = ref([]),
+    csvJsonData = ref(null),
+    originalText = ref(''),
+    errorText = ref(''),
+    submittedText = ref([
+
+    ])
+    
+    const readFile = e => {
+      if(!e.target) return
+      const file = e.target.files[0]
+
+      if(file.type !== 'text/csv') {
+        e.target.value = ''
+        return alert('csv 파일만 업로드 하세요.') 
+      }
+      const reader = new FileReader()
+
+      reader.onload = function(e){
+        tableHeader.value = []
+        tableBody.value = []
+
+        csvJsonData.value = csvToJSON(e.target.result)
+        createTable(csvJsonData.value)
+        current.value = 1
       }
 
-      reader.readAsText(file, 'shift-jis')   
+      reader.readAsText(file, 'utf-8')   
+    }
+
+    const createTable = (json) => {
+      for(var i = 0; i < Object.keys(json).length; i++){
+        if(i === 0){
+          tableHeader.value.push(...Object.values(json[i]))
+        }else{
+          tableBody.value.push(Object.values(json[i]))
+        }
+      }
+    }
+
+    const currentId = computed(() => {
+      return tab.value.find(el => el.id === current.value) || {}
+    })
+
+    const changeTab = id => {
+      current.value = id
+    }
+
+    const textSubmit = () => {
+      if(originalText.value === '' || errorText.value === '') return alert('텍스트를 입력해 주세요.')
+      
+      var variable = {
+        originalText: originalText.value,
+        errorText: errorText.value  
+      } 
+
+      const res = scrape(variable)
+
+      res.then(result => {
+        submittedText.value.unshift(variable)
+        console.log(result)
+      }).catch(error => {
+        console.log(error)
+      })
+
+      originalText.value = ''
+      errorText.value = ''
+      current.value = 2
+    } 
+
+    const eraser = () => {
+      originalText.value = ''
+      errorText.value = ''
     }
 
     return {
-      readFile
+      tab,
+      current,
+      tableHeader,
+      tableBody,
+      readFile,
+      currentId,
+      changeTab,
+      originalText,
+      errorText,
+      submittedText,
+      textSubmit,
+      eraser
     }
-  }
+  },
 }
 </script>
 
@@ -87,5 +214,13 @@ h2{
 .background{
   min-height: 300px;
   border-radius: 0.25rem;
+}
+
+.table{
+  font-size: 12px;
+}
+
+.tab-button{
+  gap: 4px;
 }
 </style>

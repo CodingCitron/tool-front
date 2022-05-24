@@ -44,10 +44,15 @@ export default {
   box-sizing: border-box;
 }
 
+.hidden{
+  display: none;
+}
+
 body{
   font-family: 'Gothic A1', sans-serif;
   font-size: 14px;
 }
+
 
 main{
   display: flex;
@@ -55,4 +60,5 @@ main{
   justify-content: center;
   height: calc(100vh - 140px);
 }
+
 </style>

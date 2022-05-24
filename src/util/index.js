@@ -1,8 +1,8 @@
 function csvToJSON(csv){
-    const rows = csv.split('\r\n'),
+    const rows = csv.trim().split('\r\n'),
     jsonArray = [],
     header = rows[0].split(',')
-
+        
     for(let i = 0; i < rows.length; i++){
         let obj = {},
         row = rows[i].split(',')

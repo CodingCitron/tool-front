@@ -29,7 +29,7 @@ export const user = {
             state.refreshToken = userData.refreshToken
             state.isLogin = true
 
-            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.accessToken}`
+            axios.defaults.headers.common['Authorization'] = `${userData.accessToken}`
         },
         LOGOUT (state) {
             localStorage.removeItem('user')
