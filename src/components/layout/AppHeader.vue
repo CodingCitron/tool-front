@@ -21,7 +21,7 @@ export default {
         const router = useRouter()
 
         const logout = () => {
-            store.commit('LOGOUT')
+            store.dispatch('user/LOGOUT')
             router.push({ name: 'signin' })
         }
 

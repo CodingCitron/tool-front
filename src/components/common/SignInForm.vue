@@ -48,11 +48,11 @@ export default {
             }
 
             const res = signIn(userData)
-
             res.then(result => {
-                store.commit('LOGIN', result.data)
+                store.dispatch('user/LOGIN', result.data)
                 router.push({ name: 'main' })
             }).catch(error => {
+                console.log(error)
                 message.value = error.response.data.result
             })
         }

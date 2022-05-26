@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/pages/app/store'
 
 const routes = [
     {
@@ -36,16 +37,25 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    const isLogin = localStorage.getItem('user')
-
+    var isLogin = store.getters['user/IS_LOGIN']
+    
     // to: 이동할 url에 해당하는 라우팅 객체
     if (to.matched.some(record => record.meta.isLogin)) {
         // 이동할 페이지에 인증 정보가 필요하면 경고 창을 띄우고 페이지 전환은 하지 않음
-        if(isLogin) next()
-        
-    } else {
-        //console.log("routing success : '" + to.path + "'");
-        next() // 페이지 전환
+        if(isLogin) {
+            next() // next()를 해야 다음 화면 이동
+        }else{
+            next({ name: 'signin' }) // 로그인이 안되어 있으면 로그인 페이지로 이동
+        }
+    } else { // signin, signup
+
+        if(isLogin) { 
+            if(to.name === 'signin' || to.name === 'signup') {
+                if(from.path === '/') next({ name: 'main' })
+            }
+        }else{
+            next()
+        }
     }
 })
 

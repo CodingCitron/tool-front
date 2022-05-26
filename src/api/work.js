@@ -1,7 +1,7 @@
-import axios from './index'
+import instance from './index'
 
 function scrape(inputData) {
-    return axios.post('/works/scrape', inputData)
+    return instance.post('/works/scrape', inputData)
 }
 
 export { scrape }

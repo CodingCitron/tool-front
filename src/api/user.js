@@ -1,11 +1,16 @@
-import axios from './index'
+import instance from './index'
 
 function signUp(userData) {
-    return axios.post('/accounts/signup', userData)
+    return instance.post('/accounts/signup', userData)
 }
 
 function signIn(userData) {
-    return axios.post('/accounts/signin', userData)
+    return instance.post('/accounts/signin', userData)
 }
 
-export { signUp, signIn }
+function requestToken(info){
+    // console.log('토큰 재발급')
+    return instance.post(`/accounts/token`, info)
+}
+
+export { signUp, signIn, requestToken }

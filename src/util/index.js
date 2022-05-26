@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode'
+
 function csvToJSON(csv){
     const rows = csv.trim().split('\r\n'),
     jsonArray = [],
@@ -17,6 +19,13 @@ function csvToJSON(csv){
     return jsonArray
 }
 
+function availableToken(token){
+    const { exp } = jwtDecode(token)
+    if (Date.now() >= exp * 1000) return false
+    return true
+}
+
 export {
-    csvToJSON
+    csvToJSON,
+    availableToken
 } 

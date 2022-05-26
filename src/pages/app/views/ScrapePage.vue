@@ -89,6 +89,7 @@ import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 import { scrape } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
+import { useStore } from 'vuex'
 
 export default {
   components: {
@@ -115,7 +116,9 @@ export default {
     submittedText = ref([
 
     ])
-    
+
+    const store = useStore()
+
     const readFile = e => {
       if(!e.target) return
       const file = e.target.files[0]
@@ -159,23 +162,31 @@ export default {
     const textSubmit = () => {
       if(originalText.value === '' || errorText.value === '') return alert('텍스트를 입력해 주세요.')
       
-      var variable = {
-        originalText: originalText.value,
-        errorText: errorText.value  
-      } 
+      var user = store.getters['user/GET_USER_INFO']
 
+      var variable = {
+        userId: user.userId,
+        userName: user.userName, 
+        originalText: originalText.value,
+        errorText: errorText.value,
+      } 
+      
       const res = scrape(variable)
 
       res.then(result => {
+        if(result.data.message === 'duplicate'){
+          return alert('중복 문장입니다.')
+        }
+
         submittedText.value.unshift(variable)
+
+        originalText.value = ''
+        errorText.value = ''
+        current.value = 2
         console.log(result)
       }).catch(error => {
         console.log(error)
       })
-
-      originalText.value = ''
-      errorText.value = ''
-      current.value = 2
     } 
 
     const eraser = () => {

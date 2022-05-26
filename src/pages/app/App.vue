@@ -10,7 +10,7 @@
 import AppHeader from '@/components/layout/AppHeader'
 import AppFooter from '@/components/layout/AppFooter'
 import { useRouter } from 'vue-router'
-import { useStore } from "vuex"
+import { useStore } from 'vuex'
 
 export default {
   name: 'App',
@@ -20,16 +20,13 @@ export default {
   },
 
   created() {
-    const store = useStore()
-    const router = useRouter()
-    const user = localStorage.getItem('user')
+    const store = useStore(),
+    router = useRouter(),
+    user = localStorage.getItem('user')
     
     if(user){
       const userData = JSON.parse(user)
-      store.commit('SET_USER_DATA', userData)
-      //router.push({ name: 'main' })
-    }else{
-      router.push({ name: 'signin' })
+      store.commit('user/SET_USER_DATA', userData)
     }
   },
 }
@@ -52,7 +49,6 @@ body{
   font-family: 'Gothic A1', sans-serif;
   font-size: 14px;
 }
-
 
 main{
   display: flex;
