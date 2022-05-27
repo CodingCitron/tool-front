@@ -25,7 +25,26 @@ function availableToken(token){
     return true
 }
 
+function copyObj(obj){
+    if(obj === null || typeof obj !== "object"){
+        return obj
+    }
+
+    let copy = {}
+
+    if(Array.isArray(obj)){
+        copy = []
+    }
+
+    for (let key in obj){ //복사
+        copy[key] = copyObj(obj[key])
+    }
+
+    return copy
+}
+
 export {
     csvToJSON,
-    availableToken
+    availableToken,
+    copyObj
 } 

@@ -43,7 +43,7 @@ instance.interceptors.response.use(
                 console.log('JWTVerificationException || verifyFailed')
                 // 토큰 에러 - 로그 아웃 || 리프레시 토큰 검증 실패
                 store.dispatch('user/LOGOUT')
-                router.push({ name: 'signin' })
+                router.push({ name: 'signIn' })
                 return Promise.reject(error.response.data)
             } 
 

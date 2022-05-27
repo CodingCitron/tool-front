@@ -5,29 +5,43 @@ const routes = [
     {
         path: '/authoringtool/22',
         alias: ['/', '/authoringtool/22', '/authoringtool/22/signin'],
-        name: 'signin',
+        name: 'signIn',
         component: () =>
-            import(/* webpackChunkName: "Home" */ '../views/SignInPage.vue'),
+            import(/* webpackChunkName: "SignInPage" */ '../views/SignInPage.vue'),
     },
     {
         path: '/authoringtool/22/signup',
-        name: 'signup',
+        name: 'signUp',
         component: () =>
-            import(/* webpackChunkName: "Home" */ '../views/SignUpPage.vue'),
+            import(/* webpackChunkName: "SignUpPage" */ '../views/SignUpPage.vue'),
     },
     {
         path: '/authoringtool/22/works',
         name: 'main',
         meta: { isLogin: true },
         component: () =>
-            import(/* webpackChunkName: "Home" */ '../views/MainPage.vue'),
+            import(/* webpackChunkName: "MainPage" */ '../views/MainPage.vue'),
     },
     {
         path: '/authoringtool/22/works/scrape',
         name: 'scrape',
         meta: { isLogin: true },
         component: () =>
-            import(/* webpackChunkName: "Home" */ '../views/ScrapePage.vue'),
+            import(/* webpackChunkName: "ScrapePage" */ '../views/ScrapePage.vue'),
+    },
+    {
+        path: '/authoringtool/22/works/error-sentence',
+        name: 'inputErrorSentence',
+        meta: { isLogin: true },
+        component: () =>
+            import(/* webpackChunkName: "InputErrorSentence" */ '../views/InputErrorSentence.vue'),
+    },
+    {
+        path: '/authoringtool/22/works/origin-sentence',
+        name: 'inputOriginSentence',
+        meta: { isLogin: true },
+        component: () =>
+            import(/* webpackChunkName: "InputOriginSentence" */ '../views/InputOriginSentence.vue'),
     },
 ]
 

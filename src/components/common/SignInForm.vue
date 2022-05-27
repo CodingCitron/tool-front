@@ -14,7 +14,7 @@
         </div>
         <div class="d-grid gap-2 mb-3">
             <button type="submit" class="btn btn-primary" @click.prevent="onSubmit">로그인</button>
-            <router-link :to="{ name: 'signup' }" class="btn btn-primary">회원가입</router-link>
+            <router-link :to="{ name: 'signUp' }" class="btn btn-primary">회원가입</router-link>
         </div>
         <div class="mb-3">
             <p class="text-danger">{{ message }}</p>
@@ -33,7 +33,7 @@ export default {
         const name = ref(''),
         tel = ref(''),
         message = ref('')
-
+        
         const router = useRouter()
         const store = useStore()
 

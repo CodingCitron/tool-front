@@ -22,7 +22,7 @@ export default {
 
         const logout = () => {
             store.dispatch('user/LOGOUT')
-            router.push({ name: 'signin' })
+            router.push({ name: 'signIn' })
         }
 
         return {

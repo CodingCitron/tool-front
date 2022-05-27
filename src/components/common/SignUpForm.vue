@@ -17,11 +17,11 @@
               <label class="form-label">성별</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="sex" id="male" value="male" v-model="sex">
+              <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="gender">
               <label class="form-check-label" for="male">남자</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="sex" id="female" value="female" v-model="sex">
+              <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="gender">
               <label class="form-check-label" for="female">여자</label>
             </div>
         </div>
@@ -65,25 +65,27 @@
 import { ref } from 'vue'
 import { signUp } from '../../api/user.js'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   setup(){
     const name = ref(''),
     tel = ref(''),
     birth = ref(''),
-    sex = ref(''),
+    gender = ref(''),
     device = ref(''),
     keyInterface = ref(''),
     recommender = ref('')
 
     const router = useRouter()
+    const store = useStore()
 
     const onSubmit = () => {
         const userData = {
             name: name.value,
             tel: tel.value,
             birth: birth.value,
-            sex: sex.value,
+            gender: gender.value,
             device: device.value,
             keyInterface: keyInterface.value,
             recommender: recommender.value
@@ -92,37 +94,18 @@ export default {
         const res = signUp(userData)
 
         res.then(() => {
-          this.$store.commit("login", res.data);
-          router.push({ name: 'signin' })
+          router.push({ name: 'signIn' })
         }).catch(err => {
-          
+          console.log(err)
         })
 
-        //initForm()
     }
-
-    /*
-    const validation = () => {
-
-    }
-    */
-
-    /*
-    const initForm = () => {
-      name.value = ''
-      tel.value = ''
-      birth.value = ''
-      sex.value = ''
-      device.value = ''
-      keyInterface.value = ''
-    }
-    */
 
     return {
       name,
       tel,
       birth,
-      sex,
+      gender,
       device,
       keyInterface,
       recommender,

@@ -78,6 +78,10 @@
               </tbody>
             </table>
         </div>
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
+          </button>
+        </div>
       </div>
     </section>
   </div>
@@ -87,7 +91,7 @@
 import { csvToJSON } from '@/util'
 import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
-import { scrape } from '@/api/work'
+import { scrape, inputCsv } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
 
@@ -110,14 +114,15 @@ export default {
     ]),
     tableHeader = ref([]),
     tableBody = ref([]),
-    csvJsonData = ref(null),
+    csvJsonData = ref([]),
     originalText = ref(''),
     errorText = ref(''),
     submittedText = ref([
 
     ])
 
-    const store = useStore()
+    const store = useStore(),
+    user = store.getters['user/GET_USER_INFO']
 
     const readFile = e => {
       if(!e.target) return
@@ -138,7 +143,7 @@ export default {
         current.value = 1
       }
 
-      reader.readAsText(file, 'utf-8')   
+      reader.readAsText(file, 'UTF-8')   
     }
 
     const createTable = (json) => {
@@ -162,7 +167,6 @@ export default {
     const textSubmit = () => {
       if(originalText.value === '' || errorText.value === '') return alert('텍스트를 입력해 주세요.')
       
-      var user = store.getters['user/GET_USER_INFO']
 
       var variable = {
         userId: user.userId,
@@ -194,6 +198,37 @@ export default {
       errorText.value = ''
     }
 
+    const csvSubmit = () => {    
+      if(!csvJsonData.value) return alert('입력된 CSV 파일이 없습니다.')
+      
+      variable = []
+      console.log(csvJsonData.value)
+      for(var i = 1; i < csvJsonData.value.length; i++){
+        variable.push({
+          sentence: csvJsonData.value[i].error_sentence,
+          registrant: user.userId,
+          status: 'mega',
+          error_type_spac: csvJsonData.value[i].error_type_spac,
+          error_type_mark: csvJsonData.value[i].error_type_mark,
+          error_type_etc: csvJsonData.value[i].error_type_etc,
+          meta_category: csvJsonData.value[i].meta_category,
+          meta_interface: csvJsonData.value[i].meta_interface,
+          meta_keyboard: csvJsonData.value[i].meta_keyboard,
+          meta_gender: csvJsonData.value[i].meta_gender,
+          meta_age: csvJsonData.value[i].meta_age,
+          reg_date: csvJsonData.value[i].reg_date,
+        })
+      }
+
+      const res = inputCsv(variable)
+
+      res.then(result => {
+        alert('제출 되었습니다.')
+      }).catch(error => {
+        console.log(error)
+      })
+   }
+
     return {
       tab,
       current,
@@ -206,7 +241,8 @@ export default {
       errorText,
       submittedText,
       textSubmit,
-      eraser
+      eraser,
+      csvSubmit
     }
   },
 }
