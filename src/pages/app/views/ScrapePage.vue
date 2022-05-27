@@ -200,8 +200,8 @@ export default {
 
     const csvSubmit = () => {    
       if(!csvJsonData.value) return alert('입력된 CSV 파일이 없습니다.')
-      
-      variable = []
+
+      var variable = []
       console.log(csvJsonData.value)
       for(var i = 1; i < csvJsonData.value.length; i++){
         variable.push({
