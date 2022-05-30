@@ -6,11 +6,17 @@
     <router-link :to="{ name: 'scrape' }" class="btn btn-primary">수집 - 스크립트 음성</router-link>
     <router-link :to="{ name: 'scrape' }" class="btn btn-primary">가공 - 스크립트</router-link>
     <router-link :to="{ name: 'scrape' }" class="btn btn-primary">가공 - 음성</router-link>
+    <Card />
   </div>
 </template>
 
 <script>
+import Card from '@/components/common/Card'
+
 export default {
+  components: {
+    Card
+  }
 
 }
 </script>

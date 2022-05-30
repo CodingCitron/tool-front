@@ -43,8 +43,20 @@ function copyObj(obj){
     return copy
 }
 
+function getWesternAge(birthday){
+    let today = new Date()
+    let thisYear = today.getFullYear()
+    let birthYear = birthday.getFullYear()
+    let yearAge = thisYear - birthYear
+    let thisBirth = birthday.setFullYear(thisYear)	//올해의 생일 timestamp로 반환
+    
+    if(today.getTime() > thisBirth) yearAge--
+    return yearAge
+}
+
 export {
     csvToJSON,
     availableToken,
-    copyObj
+    copyObj,
+    getWesternAge
 } 

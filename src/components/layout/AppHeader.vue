@@ -1,33 +1,22 @@
 <template>
   <header>
         <nav class="p-2">
-            <h1><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
+            <h1 title="고빈도 오류 교정 데이터"><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
             <div class="right-menu">
-                <button type="button" class="btn btn-primary" @click="logout" v-if="isLogin">로그아웃</button>
+                <DropDownMenu v-if="isLogin"/>
             </div>
         </nav>
   </header>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 import { authComputed } from '@/pages/app/store/helper'
 import { computed } from '@vue/runtime-core'
+import DropDownMenu from '@/components/common/DropDownMenu'
 
 export default {
-    setup(){
-        const store = useStore()
-        const router = useRouter()
-
-        const logout = () => {
-            store.dispatch('user/LOGOUT')
-            router.push({ name: 'signIn' })
-        }
-
-        return {
-            logout
-        }
+    components: {
+        DropDownMenu
     },
 
     computed: {

@@ -1,0 +1,60 @@
+/*
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700&display=swap');
+*/
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.hidden{
+  display: none;
+}
+
+body{
+  /*font-family: 'Gothic A1', sans-serif;*/
+  font-size: 14px;
+}
+
+main{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 140px);
+}
+
+@media screen and (max-height: 900px) {
+  main {
+    height: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.salt-green-color{
+  color: #0ed058;
+}
+
+.salt-green-back{
+  background-color: #0ed058;
+}
+
+.salt-blue-color{
+  color: #0097f6;
+}
+
+.salt-blue-back{
+  background-color: #0097f6;
+}
+
+.btn-salt-blue{
+  color: white;
+  background-color: #0097f6;
+  border-color: #0097f6;
+}
+
+.btn-outline-salt-blue {
+    color: #0097f6;
+    border-color: #0097f6;
+}

@@ -9,8 +9,8 @@
             <input type="text" class="form-control" id="tel" v-model="tel">
         </div>
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">기억하기</label>
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="checked">
+            <label class="form-check-label" for="exampleCheck1">이름, 전화번호 기억</label>
         </div>
         <div class="d-grid gap-2 mb-3">
             <button type="submit" class="btn btn-primary" @click.prevent="onSubmit">로그인</button>
@@ -23,16 +23,20 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { signIn } from '../../api/user.js'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { useCookies } from "vue3-cookies";
 
 export default {
     setup(){
         const name = ref(''),
         tel = ref(''),
-        message = ref('')
+        message = ref(''),
+        checked = ref('')
+
+        const { cookies } = useCookies();
         
         const router = useRouter()
         const store = useStore()
@@ -44,11 +48,14 @@ export default {
             }
 
             if(!checkBlank(userData)){
-                return alert("이름, 전화번호를 입력해 주세요.")
+                message.value = '이름, 전화번호를 입력해 주세요.'
+                return
             }
 
             const res = signIn(userData)
             res.then(result => {
+                if(checked.value) cookies.set('myNameTel', name.value + '|' + tel.value)
+
                 store.dispatch('user/LOGIN', result.data)
                 router.push({ name: 'main' })
             }).catch(error => {
@@ -67,13 +74,30 @@ export default {
             return true
         }
 
+        watch(checked, () => {
+            if(checked.value) cookies.set('myNameTel', name.value + '|' + tel.value)
+            else cookies.remove('myNameTel')
+        })
+
+        onMounted(() => {
+            const nameTel = cookies.get('myNameTel')
+
+            if(nameTel){
+                name.value = nameTel.split('|')[0]
+                tel.value = nameTel.split('|')[1]
+                checked.value = true
+            }
+        })
+
         return {
             name,
             tel,
             message,
-            onSubmit
+            onSubmit,
+            checked
         }
-    }
+    },
+
 }
 </script>
 

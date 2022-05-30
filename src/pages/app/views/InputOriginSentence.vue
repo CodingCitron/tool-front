@@ -1,10 +1,10 @@
 <template>
-  <div class="container bg-light p-4 border border-secondary rounded">
+  <div class="container bg-light p-4 contents">
         <section>
-            <h2 class="mb-4">스크립트 입력 - 원문</h2>
+            <h3 class="mb-4">스크립트 입력 - 교정 문장</h3>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
-                    <span>원문이 없는 수집 문장 [ {{ num? num + 1 + '-' : '' }} {{ sentence.length }} ]</span>
+                    <span>교정 문장이 없는 수집 문장 [ {{ num? num + 1 + '-' : '' }} {{ sentence.length }} ]</span>
                 </div>
                 <div class="flex-grow-1">
                     <p class="form-control origin-sentence" v-bind:class="[status ? 'text-danger' : '']">
@@ -14,10 +14,10 @@
             </div>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
-                    <label for="inputSentence">원문 입력창</label>
+                    <label for="inputSentence">교정 문장 입력창</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" placeholder="에러 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
+                    <textarea class="form-control" placeholder="교정 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
                 </div>
             </div>
             <div class="form-floating d-flex flex-column">
@@ -125,6 +125,7 @@ export default {
         })
 
         watch(inputSentence, () => {
+            if(!sentence.value[num.value]) return
             sentence.value[num.value].error_sentence = inputSentence.value
         })
 
@@ -151,5 +152,10 @@ export default {
 .text-button{
     border: none;
     background: none;
+}
+
+.contents{
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
 }
 </style>

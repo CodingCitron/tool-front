@@ -1,89 +1,93 @@
 <template>
-  <div class="container">
-    <section class="mb-5">
-      <h2 class="mb-4">데이터 붙여넣기</h2>
-      <div class="form-floating mb-3 d-flex">
-        <div class="d-flex align-items-center me-3">
-          <label for="input">원문 입력</label>
+  <div class="wrap">
+    <div class="container contents bg-light p-4 mb-5">
+      <section>        
+        <h3 class="mb-4">데이터 붙여넣기</h3>
+        <div class="form-floating mb-3 d-flex flex-column">
+          <div class="d-flex align-items-center mb-2">
+            <label for="input">교정 문장</label>
+          </div>
+          <div class="flex-grow-1">
+            <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="originalText"></textarea>
+          </div>
         </div>
-        <div class="flex-grow-1">
-          <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="originalText"></textarea>
+        <div class="form-floating mb-3 d-flex flex-column">
+          <div class="d-flex align-items-center mb-2">
+            <label for="paste">수집 문장</label>
+          </div>
+          <div class="flex-grow-1">
+            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errorText"></textarea>
+          </div>
         </div>
-      </div>
-      <div class="form-floating mb-3 d-flex">
-        <div class="d-flex align-items-center me-3">
-          <label for="paste">수집 문장</label>
+        <div class="form-floating d-flex flex-column">
+          <div class="d-flex justify-content-end mb-2 text-secondary">
+            <span class="ps-1 pe-1">{{ originalText.length }}</span>
+            <span>|</span>
+            <span class="ps-1 pe-1">{{ errorText.length }}</span>
+            <span>|</span>
+            <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
+          </div>
         </div>
-        <div class="flex-grow-1">
-          <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errorText"></textarea>
-        </div>
-      </div>
-      <div class="form-floating mb-3 d-flex flex-column">
-        <div class="d-flex justify-content-end mb-2 text-secondary">
-          <span class="ps-1 pe-1">{{ originalText.length }}</span>
-          <span>|</span>
-          <span class="ps-1 pe-1">{{ errorText.length }}</span>
-          <span>|</span>
-          <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
-        </div>
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
-        </div>
-      </div>
-    </section>
-    <section>
-      <div class="mb-4 d-flex justify-content-between">
-        <div class="d-flex tab-button">
-          <TabItem 
-            v-for="item in tab"
-            v-bind="item" :key="item.id"
-            :value="current"
-            @input="changeTab"
-            />
+      </section>
+    </div>
+    <div>
+      <section class="p-4 contents bg-light background m-3">
+        <div class="mb-4 d-flex justify-content-between">
+          <div class="d-flex tab-button">
+            <TabItem 
+              v-for="item in tab"
+              v-bind="item" :key="item.id"
+              :value="current"
+              @input="changeTab"
+              />
+          </div>
+          <div>
+              <input type="file" class="form-control" @change="readFile">
+          </div>
         </div>
         <div>
-            <input type="file" class="form-control" @change="readFile">
-        </div>
-      </div>
-      <div>
-        <div class="form-floating bg-light background p-4" :class="currentId.id === 1 ? 'active' : 'hidden'">
-          <table class="table">
-            <thead>
-              <tr>
-                <th v-for="(item, i) in tableHeader" >{{ item }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(line, i) in tableBody" >
-                <td v-for="(item, i) in line">{{ item }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="form-floating bg-light background p-4" :class="currentId.id === 2 ? 'active' : 'hidden'">
+          <div class="form-floating background" :class="currentId.id === 1 ? 'active' : 'hidden'">
             <table class="table">
               <thead>
                 <tr>
-                  <th>구분</th>
-                  <th>원문</th>
-                  <th>수집 문장</th>
+                  <th v-for="(item, i) in tableHeader" >{{ item }}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, i) in submittedText">
-                  <td>{{ i }}</td>
-                  <td>{{ item.originalText }}</td>
-                  <td>{{ item.errorText }}</td>
+                <tr v-for="(line, i) in tableBody" >
+                  <td v-for="(item, i) in line">{{ item }}</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="form-floating background" :class="currentId.id === 2 ? 'active' : 'hidden'">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>원문</th>
+                    <th>수집 문장</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, i) in submittedText">
+                    <td>{{ i }}</td>
+                    <td>{{ item.originalText }}</td>
+                    <td>{{ item.errorText }}</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
+            </button>
+          </div>
         </div>
-        <div class="d-flex justify-content-end">
-          <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
-          </button>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -199,7 +203,7 @@ export default {
     }
 
     const csvSubmit = () => {    
-      if(!csvJsonData.value) return alert('입력된 CSV 파일이 없습니다.')
+      if(!csvJsonData.value.length) return alert('입력된 CSV 파일이 없습니다.')
 
       var variable = []
       console.log(csvJsonData.value)
@@ -207,7 +211,7 @@ export default {
         variable.push({
           sentence: csvJsonData.value[i].error_sentence,
           registrant: user.userId,
-          status: 'mega',
+          status: 'A',
           error_type_spac: csvJsonData.value[i].error_type_spac,
           error_type_mark: csvJsonData.value[i].error_type_mark,
           error_type_etc: csvJsonData.value[i].error_type_etc,
@@ -249,8 +253,8 @@ export default {
 </script>
 
 <style>
-h2{
-  font-size: 24px;
+.wrap{
+  width: 100%;
 }
 
 .text-button{
@@ -259,7 +263,7 @@ h2{
 }
 
 .background{
-  min-height: 300px;
+  min-height: 200px;
   border-radius: 0.25rem;
 }
 
@@ -269,5 +273,10 @@ h2{
 
 .tab-button{
   gap: 4px;
+}
+
+.contents{
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
 }
 </style>

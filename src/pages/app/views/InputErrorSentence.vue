@@ -1,11 +1,11 @@
 <template>
-  <div class="container bg-light p-4 border border-secondary rounded">
+  <div class="container bg-light p-4 rounded contents">
         <section>
-            <h2 class="mb-4">스크립트 입력 - 오류 문장</h2>
+            <h3 class="mb-4">스크립트 입력 - 오류 문장</h3>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
                     <span v-if="sentence.length === 0"></span>
-                    <span>원문 
+                    <span>교정 문장 
                         <span v-if="sentence.length === 0"></span>
                         <span v-else>{{ num + 1 }} - {{ sentence.length }}</span>
                     </span>
@@ -21,7 +21,7 @@
                     <label for="inputSentence">수집 문장</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" placeholder="에러 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
+                    <textarea class="form-control" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
                 </div>
             </div>
             <div class="form-floating d-flex flex-column">
@@ -132,6 +132,7 @@ export default {
         })
 
         watch(inputSentence, () => {
+            if(!sentence.value[num.value]) return
             sentence.value[num.value].error_sentence = inputSentence.value
         })
 
@@ -158,5 +159,10 @@ export default {
 .text-button{
     border: none;
     background: none;
+}
+
+.contents{
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
 }
 </style>

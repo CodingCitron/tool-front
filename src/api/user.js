@@ -10,7 +10,11 @@ function signIn(userData) {
 
 function requestToken(info){
     // console.log('토큰 재발급')
-    return instance.post(`/accounts/token`, info)
+    return instance.post('/accounts/token', info)
 }
 
-export { signUp, signIn, requestToken }
+function checkId(id){
+    return instance.post('/accounts/check-id', id)
+}
+
+export { signUp, signIn, requestToken, checkId }
