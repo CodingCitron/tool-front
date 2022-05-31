@@ -27,11 +27,11 @@ export default {
     if(user){
       const userData = JSON.parse(user)
       store.commit('user/SET_USER_DATA', userData)
+      store.dispatch('user/CHECK_LOGIN')
     }
   },
 }
 </script>
 
 <style>
-@import '@/assets/styles/common.css';
 </style>

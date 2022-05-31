@@ -17,4 +17,8 @@ function checkId(id){
     return instance.post('/accounts/check-id', id)
 }
 
-export { signUp, signIn, requestToken, checkId }
+function checkLogin(userData){
+    return instance.post('/accounts/check-login', userData)
+}
+
+export { signUp, signIn, requestToken, checkId, checkLogin }

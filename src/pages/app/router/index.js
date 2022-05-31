@@ -16,6 +16,29 @@ const routes = [
             import(/* webpackChunkName: "SignUpPage" */ '../views/SignUpPage.vue'),
     },
     {
+        path: '/authoringtool/22/account-detail',
+        name: 'accountDetail',
+        component: () =>
+            import(/* webpackChunkName: "AccountDetailPage" */ '../views/AccountDetailPage.vue'),
+    },
+    {
+        path: '/authoringtool/22/manage/',
+        name: 'manage',
+        meta: { isLogin: true, Authorization: ['ADMIN'] },
+        component: () =>
+            import(/* webpackChunkName: "AdminPage" */ '../views/AdminPage.vue'),
+    },
+    {
+        path: '/authoringtool/22/404',
+        name: 'notFound',
+        component: () =>
+            import(/* webpackChunkName: "notFoundPage" */ '../views/notFoundPage.vue'),
+      },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/authoringtool/22/404',
+    },
+    {
         path: '/authoringtool/22/works',
         name: 'main',
         meta: { isLogin: true },
@@ -51,21 +74,36 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    var isLogin = store.getters['user/IS_LOGIN']
-
+    var isLogin = store.getters['user/IS_LOGIN'],
+    userAuth = store.getters['user/GET_AUTH']
     // to: 이동할 url에 해당하는 라우팅 객체
     if (to.matched.some(record => record.meta.isLogin)) {
-        // 이동할 페이지에 인증 정보가 필요하면 경고 창을 띄우고 페이지 전환은 하지 않음
-        if(isLogin) {
-                next() // next()를 해야 다음 화면 이동
-        }else{
-            next({ name: 'signin' }) // 로그인이 안되어 있으면 로그인 페이지로 이동
-        }
-    } else { // signin, signup
+        const { Authorization } = to.meta
+
+            if(isLogin) { // 로그인 했는지 확인
+
+                if (Authorization && Authorization.length) { // 권한이 필요한 페이지
+                    if(Authorization.includes(userAuth)){ // 권한이 존재
+                        next()   
+                    } else { // 권한이 없음
+                        next({ name: 'main' })
+                        alert('권한이 없습니다.')
+                    }
+                } else { // 로그인만 필요한 페이지
+                    next()
+                }
+
+            }else{
+                next({ name: 'signIn' }) 
+            }
         
+    } else { // signin, signup
+
         if(isLogin) { 
             if(to.name === 'signIn' || to.name === 'signUp') {
                 if(from.path === '/') next({ name: 'main' })
+            } else {
+                next()
             }
         }else{
             next()

@@ -1,6 +1,6 @@
 <template>
     <div>
-        Account Detail
+        adminPage
     </div>
 </template>
 

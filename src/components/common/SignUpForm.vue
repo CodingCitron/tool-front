@@ -7,7 +7,7 @@
         <div class="mb-3">
             <label for="tel" class="d-flex form-label justify-content-between">
               <span>전화번호</span>
-              <span :class="[telMessage.status ? '' : 'text-danger' ]">{{ telMessage.message }}</span>
+              <span :class="[telMessage.status ? 'text-success' : 'text-danger' ]">{{ telMessage.message }}</span>
             </label>
             <input type="text" class="form-control" id="tel" v-model="tel" @keyup="checkIdValue" placeholder="아이디로 사용됩니다. ex)01012345678">
         </div>

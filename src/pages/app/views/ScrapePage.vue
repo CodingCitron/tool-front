@@ -27,15 +27,15 @@
             <span>|</span>
             <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
           </div>
-          <div class="d-flex justify-content-end">
+        </div>
+        <div class="d-flex justify-content-end">
             <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
-          </div>
         </div>
       </section>
     </div>
-    <div>
-      <section class="p-4 contents bg-light background m-3">
-        <div class="mb-4 d-flex justify-content-between">
+    <div class="container contents bg-light background p-4">
+      <section>
+        <div class="mb-4 d-flex justify-content-between sticky-left">
           <div class="d-flex tab-button">
             <TabItem 
               v-for="item in tab"
@@ -48,7 +48,7 @@
               <input type="file" class="form-control" @change="readFile">
           </div>
         </div>
-        <div>
+        <div class="overflow-auto">
           <div class="form-floating background" :class="currentId.id === 1 ? 'active' : 'hidden'">
             <table class="table">
               <thead>
@@ -73,7 +73,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, i) in submittedText">
+                  <tr v-for="(item, i) in pagination.view">
                     <td>{{ i }}</td>
                     <td>{{ item.originalText }}</td>
                     <td>{{ item.errorText }}</td>
@@ -81,10 +81,25 @@
                 </tbody>
               </table>
           </div>
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
-            </button>
-          </div>
+        </div>
+        <div class="d-flex justify-content-between sticky-left">
+          <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                  <li class="page-item">
+                    <button :class="[pagination.pageLength > 1? 'page-link active' : 'hidden' ]" @click="() => pagingBtn(pagination.nowPage - 1)">이전</button>
+                  </li>
+                  <li v-for="(item) in Math.ceil(pagination.length / pagination.getLength)" 
+                    :class="[pagination.nowPage === item? 'active page-item' : 'page-item']"
+                  >
+                    <button class="page-link" @click="() => pagingBtn(item)" >{{ item }}</button>
+                  </li>
+                  <li class="page-item">
+                    <button :class="[pagination.pageLength > 1? 'page-link active' : 'hidden' ]" @click="() => pagingBtn(pagination.nowPage + 1)">다음</button>
+                  </li>
+              </ul>
+          </nav>
+          <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
+          </button>
         </div>
       </section>
     </div>
@@ -94,7 +109,7 @@
 <script>
 import { csvToJSON } from '@/util'
 import { ref } from '@vue/reactivity'
-import { computed } from '@vue/runtime-core'
+import { computed, watch } from '@vue/runtime-core'
 import { scrape, inputCsv } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
@@ -121,9 +136,30 @@ export default {
     csvJsonData = ref([]),
     originalText = ref(''),
     errorText = ref(''),
-    submittedText = ref([
+    submittedText = ref([]),
+    pagination = ref({
+      nowPage: 1, 
+      pageLength: 0,
+      length: 0,
+      getLength: 10,
+      view: []
+    })
 
-    ])
+    watch(submittedText.value, (newCount, oldCount) => {
+      var len = submittedText.value.length
+      pagination.value.length = len
+      pagination.value.pageLength = Math.ceil(len/pagination.value.getLength)
+
+      console.log(pagination.value)
+      pagingBtn(pagination.value.nowPage)
+    })
+
+    const pagingBtn = index => {
+      var start = (index - 1)  * pagination.value.getLength
+      var end = index * pagination.value.getLength
+      pagination.value.view = submittedText.value.slice(start, end)
+      pagination.value.nowPage = index
+    } 
 
     const store = useStore(),
     user = store.getters['user/GET_USER_INFO']
@@ -169,9 +205,9 @@ export default {
     }
 
     const textSubmit = () => {
+      console.log(submittedText.value)
       if(originalText.value === '' || errorText.value === '') return alert('텍스트를 입력해 주세요.')
       
-
       var variable = {
         userId: user.userId,
         userName: user.userName, 
@@ -244,6 +280,8 @@ export default {
       originalText,
       errorText,
       submittedText,
+      pagination,
+      pagingBtn,
       textSubmit,
       eraser,
       csvSubmit
@@ -278,5 +316,10 @@ export default {
 .contents{
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+}
+
+.sticky-left{
+  position: sticky;
+  left: 0;
 }
 </style>

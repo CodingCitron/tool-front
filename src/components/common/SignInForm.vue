@@ -6,7 +6,7 @@
         </div>
         <div class="mb-3">
             <label for="tel" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel" v-model="tel">
+            <input type="password" autocomplete="off" class="form-control" id="password" v-model="password">
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="checked">
@@ -32,7 +32,7 @@ import { useCookies } from "vue3-cookies";
 export default {
     setup(){
         const name = ref(''),
-        tel = ref(''),
+        password = ref(''),
         message = ref(''),
         checked = ref('')
 
@@ -44,7 +44,7 @@ export default {
         const onSubmit = () => {
             const userData = {
                 name: name.value,
-                tel: tel.value,
+                password: password.value,
             }
 
             if(!checkBlank(userData)){
@@ -54,7 +54,7 @@ export default {
 
             const res = signIn(userData)
             res.then(result => {
-                if(checked.value) cookies.set('myNameTel', name.value + '|' + tel.value)
+                if(checked.value) cookies.set('myNamePwd', btoa(encodeURIComponent(name.value + '|' + password.value)))
 
                 store.dispatch('user/LOGIN', result.data)
                 router.push({ name: 'main' })
@@ -75,23 +75,24 @@ export default {
         }
 
         watch(checked, () => {
-            if(checked.value) cookies.set('myNameTel', name.value + '|' + tel.value)
-            else cookies.remove('myNameTel')
+            if(checked.value) cookies.set('myNamePwd', btoa(encodeURIComponent(name.value + '|' + password.value)))
+            else cookies.remove('myNamePwd')
         })
 
         onMounted(() => {
-            const nameTel = cookies.get('myNameTel')
-
-            if(nameTel){
-                name.value = nameTel.split('|')[0]
-                tel.value = nameTel.split('|')[1]
+            let myNamePwd = cookies.get('myNamePwd')
+    
+            if(myNamePwd){
+                myNamePwd = decodeURIComponent(atob(myNamePwd))
+                name.value = myNamePwd.split('|')[0]
+                password.value = myNamePwd.split('|')[1]
                 checked.value = true
             }
         })
 
         return {
             name,
-            tel,
+            password,
             message,
             onSubmit,
             checked

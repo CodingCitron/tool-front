@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header id="header">
         <nav class="p-2">
             <h1 title="고빈도 오류 교정 데이터"><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
             <div class="right-menu">
@@ -30,7 +30,7 @@ header{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 55px;
+    min-height: 55px;
     border-bottom: 1px solid #ced4da;
 }
 
@@ -49,11 +49,6 @@ h1,
     margin: 0;
     font-size: 24px;
     color: #212529;
-}
-
-a{
-    text-decoration: none;
-    color: inherit;
 }
 
 a:hover{

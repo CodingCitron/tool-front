@@ -1,5 +1,5 @@
-import { requestToken } from '@/api/user'
-import { availableToken } from '@/util'
+import { requestToken, checkLogin } from '@/api/user'
+
 
 export const user = {
     namespaced: true,
@@ -13,6 +13,15 @@ export const user = {
     },
     getters:{
         IS_LOGIN: state => state.isLogin, // https://carrotweb.tistory.com/134
+        GET_AUTH: state => {
+            if(state.userAuth === 4){
+                return 'USER'
+            }
+
+            if(state.userAuth === 3){
+                return 'ADMIN'
+            }
+        },
         GET_ACCESS_TOKEN: state => state.accessToken,
         GET_REFRESH_TOKEN: state => state.refreshToken,
         GET_USER_INFO: state => {
@@ -51,12 +60,23 @@ export const user = {
     },
     actions: {
         CHECK_LOGIN ({ commit, state }) { // 사용하지 마시오.
-            if(!availableToken(state.refreshToken)) {
-                this.commit('user/LOGOUT')
-                return false
-            } else {
-                return true
-            }
+            const res = checkLogin({ 
+                userId: state.userId,
+                accessToken: state.accessToken,
+                refreshToken: state.refreshToken
+            })
+
+            res.then(result => {
+                if(result.data.message === 'available'){
+                    return console.log('available')
+                } else {
+                    commit('user/LOGOUT')
+                    console.log('access denied')
+                }
+            }).catch(err => {
+                commit('user/LOGOUT')
+                console.log('access denied')
+            })
         },
         LOGIN (context, payload) {
             this.commit('user/SET_USER_DATA', payload)

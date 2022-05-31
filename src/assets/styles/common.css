@@ -8,28 +8,13 @@
   box-sizing: border-box;
 }
 
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
 .hidden{
   display: none;
-}
-
-body{
-  /*font-family: 'Gothic A1', sans-serif;*/
-  font-size: 14px;
-}
-
-main{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 140px);
-}
-
-@media screen and (max-height: 900px) {
-  main {
-    height: auto;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
 }
 
 .salt-green-color{
@@ -57,4 +42,52 @@ main{
 .btn-outline-salt-blue {
     color: #0097f6;
     border-color: #0097f6;
+}
+
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+#header{
+    width: 100%;
+}
+
+#footer{
+    width: 100%;
+}
+
+#app{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    font-size: 14px;
+}
+
+#logo-img{
+    height: 50px;
+}
+
+.overflow-auto{
+    overflow: auto;
+}
+
+@media screen and (max-height: 900px) { /* max - 최대 900px - 900 이하  1150 이상  */
+    /*
+    main {
+        height: auto;
+    }
+
+    #header,
+    #footer{
+        position: initial;
+        top: initial;
+    }
+    */
 }
