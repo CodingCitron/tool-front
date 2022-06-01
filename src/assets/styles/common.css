@@ -1,11 +1,15 @@
-/*
-@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700&display=swap');
-*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Open+Sans:wght@400;500;600;700&display=swap');
 
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body{
+  font-size: 14px;
+  font-family: 'Noto Sans KR', 'Open Sans',  sans-serif;
 }
 
 a{
@@ -44,6 +48,10 @@ a{
     border-color: #0097f6;
 }
 
+.btn{
+  font-size: 14px;
+}
+
 main{
     display: flex;
     align-items: center;
@@ -67,7 +75,6 @@ main{
     align-items: center;
     justify-content: space-between;
     height: 100vh;
-    font-size: 14px;
 }
 
 #logo-img{
