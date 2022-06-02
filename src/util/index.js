@@ -25,7 +25,7 @@ function availableToken(token){
     return true
 }
 
-function copyObj(obj){
+function copyObj(obj){ // 순환 참조에 사용하지 마세요.
     if(obj === null || typeof obj !== "object"){
         return obj
     }
@@ -43,16 +43,45 @@ function copyObj(obj){
     return copy
 }
 
-function getWesternAge(birthday){
-    let today = new Date()
-    let thisYear = today.getFullYear()
-    let birthYear = birthday.getFullYear()
-    let yearAge = thisYear - birthYear
-    let thisBirth = birthday.setFullYear(thisYear)	//올해의 생일 timestamp로 반환
+/*
+function getWesternAge(birth){
+    console.log(birth.substring(0, 4), 
+    birth.substring(4, 6), 
+    birth.substring(6, 8))
+    let birthday = new Date(
+        birth.substring(0, 4), 
+        birth.substring(4, 6), 
+        birth.substring(6, 8)
+        ),
+    today = new Date(),
+    thisYear = today.getFullYear(),
+    birthYear = birthday.getFullYear(),
+    yearAge = thisYear - birthYear,
+    thisBirth = birthday.setFullYear(thisYear)	//올해의 생일 timestamp로 반환
     
     if(today.getTime() > thisBirth) yearAge--
     return yearAge
 }
+*/
+
+function getWesternAge(birth) {
+    var date = new Date(),
+    year = date.getFullYear(),
+    month = (date.getMonth() + 1),
+    day = date.getDate()
+
+    if (month < 10) month = '0' + month
+    if (day < 10) day = '0' + day
+
+    var monthDay = month + day
+    birth = birth.replace('-', '').replace('-', '')
+
+    var birthdayy = birth.substr(0, 4),
+    birthdaymd = birth.substr(4, 4),
+    age = monthDay < birthdaymd ? year - birthdayy - 1 : year - birthdayy
+    
+    return age
+} 
 
 export {
     csvToJSON,

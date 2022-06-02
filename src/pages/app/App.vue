@@ -1,16 +1,18 @@
 <template>
-  <AppHeader/>
-  <main>
+  <AppHeader v-bind:wide="wide" />
+  <main id="main" :class="[wide? 'p-0' : '']">
     <router-view />
   </main>
-  <AppFooter/>
+  <AppFooter v-bind:wide="wide" />
 </template>
 
 <script>
 import AppHeader from '@/components/layout/AppHeader'
 import AppFooter from '@/components/layout/AppFooter'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import { computed, watch } from '@vue/runtime-core'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'App',
@@ -19,15 +21,37 @@ export default {
     AppFooter,
   },
 
+  setup(){
+    const route = useRoute(),
+    wide = ref(false)
+
+    watch(() => route.name, () => {
+        if(route.name === 'manage') {
+            wide.value = true
+        } else {
+            wide.value = false
+        }
+    })
+
+    return {
+      wide
+    }
+  },
+
   created() {
     const store = useStore(),
     router = useRouter(),
     user = localStorage.getItem('user')
-    
+
     if(user){
       const userData = JSON.parse(user)
       store.commit('user/SET_USER_DATA', userData)
       store.dispatch('user/CHECK_LOGIN')
+      .then(result => {
+        if(!result) router.push({ name: 'signIn' })
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
 }

@@ -1,6 +1,6 @@
 <template>
   <header id="header">
-        <nav class="p-2">
+        <nav :class="[wide? 'container-fluid bg-light' :'container']">
             <h1 title="고빈도 오류 교정 데이터"><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
             <div class="right-menu">
                 <DropDownMenu v-if="isLogin"/>
@@ -17,6 +17,10 @@ import DropDownMenu from '@/components/common/DropDownMenu'
 export default {
     components: {
         DropDownMenu
+    },
+
+    props: {
+        wide: Boolean
     },
 
     computed: {
@@ -37,7 +41,6 @@ header{
 header > nav{
     display: flex;
     justify-content: space-between;
-    max-width: 1920px;
     width: 100%;
     height: 100%;
 }

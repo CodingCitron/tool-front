@@ -21,13 +21,15 @@
                     <label for="inputSentence">수집 문장</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
+                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
                 </div>
             </div>
             <div class="form-floating d-flex flex-column">
+                <!--
                 <div class="d-flex justify-content-end mb-2 text-secondary">
                     <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
                 </div>
+                -->
                 <div class="d-flex justify-content-end gap-2">
                     <button class="btn btn-success" @click="previous">이전 문장</button>
                     <button class="btn btn-success" @click="next">다음 문장</button>
@@ -136,6 +138,10 @@ export default {
             sentence.value[num.value].error_sentence = inputSentence.value
         })
 
+        const notUseBackspaceKey = (e) => {
+            if(e.key === 'Backspace' || e.keyCode === 8) e.preventDefault()
+        }
+
         return {
             status,
             nowSentence,
@@ -145,7 +151,8 @@ export default {
             eraser,
             previous,
             next,
-            onSubmit
+            onSubmit,
+            notUseBackspaceKey
         }
     }
 }

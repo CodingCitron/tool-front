@@ -76,6 +76,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     var isLogin = store.getters['user/IS_LOGIN'],
     userAuth = store.getters['user/GET_AUTH']
+
     // to: 이동할 url에 해당하는 라우팅 객체
     if (to.matched.some(record => record.meta.isLogin)) {
         const { Authorization } = to.meta
@@ -83,7 +84,7 @@ router.beforeEach((to, from, next) => {
             if(isLogin) { // 로그인 했는지 확인
 
                 if (Authorization && Authorization.length) { // 권한이 필요한 페이지
-                    if(Authorization.includes(userAuth)){ // 권한이 존재
+                    if(userAuth.includes(...Authorization)){ // 권한이 존재
                         next()   
                     } else { // 권한이 없음
                         next({ name: 'main' })

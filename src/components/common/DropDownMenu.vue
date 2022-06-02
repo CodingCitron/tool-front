@@ -4,8 +4,15 @@
             {{ userInfo.userName + '님' }}
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><button class="dropdown-item" @click="logout">로그아웃</button></li>
-            <li><router-link class="dropdown-item" :to="{ name: 'accountDetail' }">개인정보</router-link></li>
+            <li>
+                <button class="dropdown-item" @click="logout">로그아웃</button>
+            </li>
+            <li>
+                <router-link class="dropdown-item" :to="{ name: 'accountDetail' }">개인정보</router-link>
+            </li>
+            <li v-if="userInfo.userAuth.includes('ADMIN')">
+                <router-link class="dropdown-item" :to="{ name: 'manage' }">관리</router-link>
+            </li>
         </ul>
     </div>
 </template>
@@ -20,7 +27,7 @@ export default {
         const store = useStore(),
         router = useRouter(),
         userInfo = store.getters['user/GET_USER_INFO']
-
+        
         const logout = () => {
             store.dispatch('user/LOGOUT')
             router.push({ name: 'signIn' })

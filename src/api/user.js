@@ -21,4 +21,13 @@ function checkLogin(userData){
     return instance.post('/accounts/check-login', userData)
 }
 
-export { signUp, signIn, requestToken, checkId, checkLogin }
+function getUserInfo(id){
+    return instance.post('/accounts/user', id)
+}
+
+function updateUserInfo(userData){
+    return instance.post('/accounts/update-user', userData)
+}
+
+
+export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo }

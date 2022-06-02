@@ -1,23 +1,23 @@
 <template>
     <form>
         <div class="mb-3" >
-            <label for="name" class="form-label">이름</label>
+            <label for="name" class="form-label">이름<span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="name" v-model="name" placeholder="급여 지급 통장의 이름과 동일하게 입력해 주세요.">
         </div>
         <div class="mb-3">
             <label for="tel" class="d-flex form-label justify-content-between">
-              <span>전화번호</span>
+              <span>전화번호<span class="text-danger">*</span></span>
               <span :class="[telMessage.status ? 'text-success' : 'text-danger' ]">{{ telMessage.message }}</span>
             </label>
             <input type="text" class="form-control" id="tel" v-model="tel" @keyup="checkIdValue" placeholder="아이디로 사용됩니다. ex)01012345678">
         </div>
          <div class="mb-3">
-            <label for="birth" class="form-label">생년월일</label>
+            <label for="birth" class="form-label">생년월일<span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="birth" v-model="birth" placeholder="19900101">
         </div>
         <div class="mb-3">
             <div>
-              <label class="form-label">성별</label>
+              <label class="form-label">성별<span class="text-danger">*</span></label>
             </div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="gender">
@@ -30,7 +30,7 @@
         </div>
         <div class="mb-3">
             <div>
-              <label class="form-label">환경</label>
+              <label class="form-label">환경<span class="text-danger">*</span></label>
             </div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="device" id="pc" value="pc" v-model="device">
@@ -43,7 +43,7 @@
         </div>
         <div class="mb-3">
             <div>
-              <label class="form-label">키보드</label>
+              <label class="form-label">키보드<span class="text-danger">*</span></label>
             </div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="key" id="qwerty" value="qwerty" v-model="keyInterface">
@@ -55,8 +55,11 @@
             </div>
         </div>
         <div class="mb-3">
-            <label for="recommender" class="form-label">추천인</label>
-            <input type="text" class="form-control" id="recommender" v-model="recommender" placeholder="추천인 전화번호 입력">
+            <label for="manager" class="d-flex form-label justify-content-between">
+              <span>매니저</span>
+              <span :class="[managerMessage.status ? 'text-success' : 'text-danger' ]">{{ managerMessage.message }}</span>
+            </label>
+            <input type="text" class="form-control" id="manager" @keyup="checkManagerId" v-model="manager" placeholder="매니저 전화번호 입력">
         </div>
         <div class="d-flex gap-2 button-list mb-3">
             <button type="submit" class="btn btn-primary" @click.prevent="checkForm">가입하기</button>
@@ -83,9 +86,13 @@ export default {
     gender = ref(''),
     device = ref(''),
     keyInterface = ref(''),
-    recommender = ref(''),
+    manager = ref(''),
     error = ref(''),
     telMessage = ref({
+      message: '',
+      status: false
+    }),
+    managerMessage = ref({
       message: '',
       status: false
     })
@@ -94,14 +101,16 @@ export default {
     const store = useStore()
 
     const submit = () => {
+      // getWesternAge(birth.value)
       const userData = {
           name: name.value,
           tel: tel.value,
-          birth: getWesternAge(new Date(birth.value)),
+          birth: birth.value,
           gender: gender.value,
           device: device.value,
           keyInterface: keyInterface.value,
-          recommender: recommender.value
+          manager: manager.value,
+          auth: ['WORKER']
       }
 
       const res = signUp(userData)
@@ -134,6 +143,18 @@ export default {
       if(!telMessage.value.status){
         error.value = '해당 전화번호로 가입한 사용자가 있습니다.'
         return
+      }
+
+      if(manager.value !== ''){
+        if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)){
+          error.value = '매니저 전화번호를 올바르게 입력해주세요.'
+          return
+        }
+
+        if(!managerMessage.value.status){
+          error.value = '등록되지 않는 전화번호입니다.'
+          return
+        }
       }
 
       submit()
@@ -171,6 +192,37 @@ export default {
       })
     }
 
+    const checkManagerId = e => {
+      managerMessage.value = {
+        message: '',
+        status: false
+      }
+
+      if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
+      const variable = {
+        tel: manager.value
+      }
+
+      const res = checkId(variable)
+      res.then(result => {
+        console.log(result)
+        if(result.data.message == 1){
+          // 중복된 전화번호
+          managerMessage.value = {
+            message: '',
+            status: true
+          }
+        } else { 
+          managerMessage.value = {
+            message: '없는 전화번호',
+            status: false
+          }
+        }
+      }).catch(error => {
+        console.loe(error)
+      })
+    }
+
     return {
       name,
       tel,
@@ -178,11 +230,13 @@ export default {
       gender,
       device,
       keyInterface,
-      recommender,
+      manager,
       checkForm,
       error,
       checkIdValue,
-      telMessage
+      checkManagerId,
+      telMessage,
+      managerMessage
     }
   }
 }

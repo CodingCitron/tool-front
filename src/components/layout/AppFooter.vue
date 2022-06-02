@@ -1,6 +1,6 @@
 <template>
   <footer id="footer">
-      <div class="p-2">
+      <div :class="[wide? 'container-fluid bg-light' :'container']">
           <div></div>
           <div>
               <router-link :to="{ name: 'main' }">
@@ -12,9 +12,14 @@
 </template>
 
 <script>
-export default {
-    setup() {
+import { computed, watch } from '@vue/runtime-core'
 
+export default {
+    props: {
+        wide: Boolean
+    },
+
+    setup() {
         return {
             logo: require('../../assets/img/logo_black.jpg')
         }
@@ -35,7 +40,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1920px;
     width: 100%;
     height: 100%;
 }

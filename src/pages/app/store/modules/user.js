@@ -13,15 +13,7 @@ export const user = {
     },
     getters:{
         IS_LOGIN: state => state.isLogin, // https://carrotweb.tistory.com/134
-        GET_AUTH: state => {
-            if(state.userAuth === 4){
-                return 'USER'
-            }
-
-            if(state.userAuth === 3){
-                return 'ADMIN'
-            }
-        },
+        GET_AUTH: state => state.userAuth,
         GET_ACCESS_TOKEN: state => state.accessToken,
         GET_REFRESH_TOKEN: state => state.refreshToken,
         GET_USER_INFO: state => {
@@ -59,23 +51,25 @@ export const user = {
         }
     },
     actions: {
-        CHECK_LOGIN ({ commit, state }) { // 사용하지 마시오.
+        CHECK_LOGIN ({ commit, state }) {
             const res = checkLogin({ 
                 userId: state.userId,
                 accessToken: state.accessToken,
                 refreshToken: state.refreshToken
             })
 
-            res.then(result => {
+            var obj = this
+
+            return res.then(result => {
                 if(result.data.message === 'available'){
-                    return console.log('available')
+                    return true
                 } else {
-                    commit('user/LOGOUT')
-                    console.log('access denied')
+                    obj.commit('user/LOGOUT')
+                    return false
                 }
             }).catch(err => {
-                commit('user/LOGOUT')
-                console.log('access denied')
+                obj.commit('user/LOGOUT')
+                return false
             })
         },
         LOGIN (context, payload) {
