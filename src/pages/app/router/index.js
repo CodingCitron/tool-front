@@ -18,11 +18,12 @@ const routes = [
     {
         path: '/authoringtool/22/account-detail',
         name: 'accountDetail',
+        meta: { isLogin: true },
         component: () =>
             import(/* webpackChunkName: "AccountDetailPage" */ '../views/AccountDetailPage.vue'),
     },
     {
-        path: '/authoringtool/22/manage/',
+        path: '/authoringtool/22/manage',
         name: 'manage',
         meta: { isLogin: true, Authorization: ['ADMIN'] },
         component: () =>
@@ -33,7 +34,7 @@ const routes = [
         name: 'notFound',
         component: () =>
             import(/* webpackChunkName: "notFoundPage" */ '../views/notFoundPage.vue'),
-      },
+    },
     {
         path: '/:pathMatch(.*)*',
         redirect: '/authoringtool/22/404',

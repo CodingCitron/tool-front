@@ -99,6 +99,25 @@ z-index
     background-color: white;
 }
 
+.width-50{
+    width: 50%;
+}
+
+.width-80{
+    width: 80%;
+}
+
+.width-100{
+    width: 100%;
+}
+
+.noresize {
+    resize: none; /* 사용자 임의 변경 불가 */
+    /*resize: both; /* 사용자 변경이 모두 가능 */
+    /*resize: horizontal; /* 좌우만 가능 */
+    /*resize: vertical; /* 상하만 가능 */
+}
+
 @media screen and (max-height: 900px) { /* max - 최대 900px - 900 이하  1150 이상  */
     /*
     main {

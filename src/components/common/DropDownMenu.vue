@@ -3,14 +3,14 @@
         <button class="user-button" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             {{ userInfo.userName + '님' }}
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <ul class="dropdown-menu shadow-sm" aria-labelledby="dropdownMenuButton1">
             <li>
                 <button class="dropdown-item" @click="logout">로그아웃</button>
             </li>
             <li>
                 <router-link class="dropdown-item" :to="{ name: 'accountDetail' }">개인정보</router-link>
             </li>
-            <li v-if="userInfo.userAuth.includes('ADMIN')">
+            <li v-if="authCheck()">
                 <router-link class="dropdown-item" :to="{ name: 'manage' }">관리</router-link>
             </li>
         </ul>
@@ -33,9 +33,20 @@ export default {
             router.push({ name: 'signIn' })
         }
 
+        const authCheck = () => {
+            if(userInfo){
+                return userInfo.userAuth.includes('ADMIN')
+            }else{
+                logout()
+            }
+
+            return false
+        }
+
         return {
             userInfo,
-            logout
+            logout,
+            authCheck
         }
     },
 

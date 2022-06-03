@@ -21,7 +21,7 @@
                     <label for="inputSentence">수집 문장</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
+                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" @keyup="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
                 </div>
             </div>
             <div class="form-floating d-flex flex-column">

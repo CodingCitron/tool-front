@@ -29,5 +29,4 @@ function updateUserInfo(userData){
     return instance.post('/accounts/update-user', userData)
 }
 
-
 export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo }

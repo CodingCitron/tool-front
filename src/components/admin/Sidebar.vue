@@ -1,20 +1,25 @@
 <template>
-  <aside id="sidebar" class="">
+  <aside id="sidebar" class="" @click="e => $emit('tabHandler', e)">
         <ul class="nav">
-            <li>
-                <button type="button" @click="$emit('addSentence')" class="p-2 text-secondary">교정 문장 관리</button>
-            </li>
-            <li>
-                <button type="button" class="p-2 text-secondary">작업자 관리</button>
+            <li v-for="item in props.tab">
+                <button type="button" class="p-2" :value="item.name" >{{ item.btnName }}</button>
             </li>
         </ul>
   </aside>
 </template>
 
 <script>
-export default {
-    setup(){
+import { ref } from 'vue'
 
+export default {
+    props: {
+        tab: Object
+    },
+    
+    setup(props){
+        return {
+            props
+        }
     }
 }
 </script>
@@ -28,7 +33,7 @@ export default {
     height: 100%;
     padding: 55px 0 80px;
     border-right: 1px solid #ced4da;
-    font-size: 16px;
+    font-size: 14px;
     color: white;
 }
 

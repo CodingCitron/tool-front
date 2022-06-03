@@ -21,7 +21,7 @@
         <Card title="수집 - 스크립트 입력 (원문)" content="수집..." link="inputOriginSentence" linkName="작업하기" />
       </div>
       <div class="p-2 col-xxl-3 col-xl-4 col-lg-4 col-md-6">
-        <Card title="수집 - 스크립트 음성" content="수집..." link="inputOriginSentence" linkName="작업하기" />
+        <Card title="가공 - 스크립트 가공" content="가공..." link="inputOriginSentence" linkName="작업하기" />
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@ export default {
   },
   setup(){
     const data = ref({
-      
+
     })
     
     return {
