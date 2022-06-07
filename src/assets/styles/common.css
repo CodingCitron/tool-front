@@ -17,6 +17,11 @@ a{
     color: inherit;
 }
 
+ul,
+li{
+    list-style: none;
+}
+
 .hidden{
   display: none;
 }
@@ -116,6 +121,95 @@ z-index
     /*resize: both; /* 사용자 변경이 모두 가능 */
     /*resize: horizontal; /* 좌우만 가능 */
     /*resize: vertical; /* 상하만 가능 */
+}
+
+/* context-menu */
+.vue-simple-context-menu {
+    background-color: #ecf0f1;
+    border-bottom-width: 0px;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px 0 rgba(51, 51, 51, 0.2);
+    display: none;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    z-index: 15;
+}
+
+.vue-simple-context-menu--active {
+    display: block;
+}
+
+.vue-simple-context-menu__item:first-child:hover,
+.vue-simple-context-menu__item {
+    align-items: center;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    padding: 5px 15px;
+    background-color: #ecf0f1;
+}
+
+.vue-simple-context-menu__item:hover {
+    background-color: #007aff;
+    color: #fff;
+}
+
+.vue-simple-context-menu__divider {
+    background-clip: content-box;
+    background-color: #c0cdd1;
+    box-sizing: content-box;
+    height: 2px;
+    padding: 4px 0;
+    pointer-events: none;
+}
+
+.vue-simple-context-menu li:first-of-type {
+    margin-top: 4px;
+}
+
+.vue-simple-context-menu li:last-of-type {
+    margin-bottom: 4px;
+}
+
+/* error-type */
+/* color */
+.error_type_near{
+    background: #ffc107;
+    color: white;
+}
+
+.error_type_post{
+    background: #6610f2;
+    color: white;
+}
+
+.error_type_pron{
+    background: #fd7e14;
+    color: white;
+}
+
+.error_type_cons{
+    background: #ffc107;
+    color: white;
+}
+
+.error_type_spac{
+    background: #20c997;
+    color: white;
+}
+
+.error_type_mark{
+    background: #dc3545;
+    color: white;
+}
+
+.error_type_etc{
+    background: #6f42c1;
+    color: white;
 }
 
 @media screen and (max-height: 900px) { /* max - 최대 900px - 900 이하  1150 이상  */

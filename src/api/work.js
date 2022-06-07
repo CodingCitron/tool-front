@@ -17,7 +17,11 @@ function inputErrorSentence(inputData){
     return instance.post(`/works/error-sentence`, inputData)
 }
 
-export { scrape, inputCsv, getExpertSentence, inputErrorSentence }
+function processSentence(userInfo){
+    return instance.post('/works/process-sentence', userInfo)
+}
+
+export { scrape, inputCsv, getExpertSentence, inputErrorSentence, processSentence }
 
 /*
 	id INTEGER not null AUTO_INCREMENT,

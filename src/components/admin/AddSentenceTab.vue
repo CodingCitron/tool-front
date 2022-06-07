@@ -7,7 +7,7 @@
                     <div>
                         
                     </div>
-                    <button type="button" class="btn btn-primary" @click="loadExcel">엑셀 파일 추가</button>
+                    <button type="button" class="btn btn-primary" @click="errorLoadExcel">엑셀 파일 추가</button>
                 </div>
             </div>
             <table class="table table-hover shadow-sm error-sentence">
@@ -48,7 +48,7 @@
                     </select>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary" @click="errorExcelSubmit">제출하기</button>
+                    <button type="button" class="btn btn-primary" @click="errorExcelSubmit" disabled>제출하기</button>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                     <div>
                         
                     </div>
-                    <button type="button" class="btn btn-primary" @click="loadExcel">엑셀 파일 추가</button>
+                    <button type="button" class="btn btn-primary" @click="corLoadExcel">엑셀 파일 추가</button>
                 </div>
             </div>
             <div class="d-flex gap-2">
@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="width-50">
-                    <table class="table table-hover shadow-sm">
+                    <table class="table table-hover shadow-sm cor-sentence">
                         <thead>
                             <tr>
                                 <th v-for="item in checkKey.corText" :class="[item[1]? item[1] : '']">{{ item[0] }}</th>
@@ -99,7 +99,7 @@
                             </select>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-primary" @click="expertExcelSubmit">제출하기</button>
+                            <button type="button" class="btn btn-primary" @click="corExcelSubmit">제출하기</button>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                 </div>
             </div>
             <div>
-                <table class="table table-hover shadow-sm">
+                <table class="table table-hover shadow-sm sentence-manage">
                     <thead>
                         <tr>
                             <th v-for="item in getSentenceData.th[toggleButtonValue.now]">
@@ -156,15 +156,17 @@
         </div>
     </div>
     <div>
-        <input type="file" class="hidden" ref="fileElement" @change="excelRead">
+        <input type="file" class="hidden" ref="errorFileElement" @change="errorExcelRead">
+        <input type="file" class="hidden" ref="corFileElement" @change="corExcelRead">
     </div>
 </template>
 
 <script>
 import { ref, watch } from 'vue'
 import { read, writeFileXLSX, utils } from 'xlsx'
-import { importExcel, addCorSentece, getSentence, getSentenceCount } from '@/api/manage'
+import { importExcel, addCorSentece, getSentence, getSentenceCount, corExcel } from '@/api/manage'
 import { useStore } from 'vuex'
+import { renameKeys } from '@/util' 
 
 export default {
     props: {
@@ -172,7 +174,8 @@ export default {
         view: String
     },
     setup (props) {
-        const fileElement = ref(''),
+        const errorFileElement = ref(''),
+        corFileElement = ref(''),
         checkKey = ref({
             errorText: {
                 id: ['번호'], /* 아이디 */
@@ -224,9 +227,9 @@ export default {
             mix: [],
             defaultValue: 'correction',
             th: {
-                correction: ['아이디', '교정 문장', '작업자', '등록자', '상태', '등록일', '그룹'],
-                error: ['아이디', '수집 문장', '교정 문장 아이디', '작업자', '등록자', '상태', '근접 오류', '조사 오류', '유사 발음 오류', '자음 동화 오류', '띄어쓰기 오류', '문장분호 오류', '기타 오류', '데이터 출처', '오류 분류', '입력 장치', '입력 키보드', '성별', '나이', '등록일', '그룹'],
-                mix: ['아이디', '수집 문장', '교정 문장 아이디', '작업자', '등록자', '상태', '근접 오류', '조사 오류', '유사 발음 오류', '자음 동화 오류', '띄어쓰기 오류', '문장분호 오류', '기타 오류', '데이터 출처', '오류 분류', '입력 장치', '입력 키보드', '성별', '나이', '등록일', '그룹'],
+                correction: [],
+                error: [],
+                mix: [],
             }
         })
 
@@ -269,8 +272,11 @@ export default {
             const res = getSentence({ type: view, start: start, limit: limit })
 
             res.then(result => {
-                getSentenceData.value[view].push(...result.data.data)
-                console.log(result)
+                result.data.data = renameKeys(renamedObj, result.data.data)
+
+                getSentenceData.value.th[view] = Object.keys(result.data.data[0])
+                getSentenceData.value[view].push(...dataSort(result))
+
             }).catch(error => {
                 console.log(error)
             })
@@ -278,24 +284,45 @@ export default {
 
         const store = useStore(),
         user = store.getters['user/GET_USER_INFO']
+        
+        getData('correction', 0, 10)
 
-        function init(){
-            const { defaultValue } = getSentenceData.value
-            const { start, limit } = paging.value
+        function dataSort(result){
+            for(var i = 0; i < result.data.data.length; i++){
+                for(var prop in result.data.data[i]){
+                    result.data.data[i][prop] = result.data.data[i][prop] === null? '빈 값' : result.data.data[i][prop]
+                }
+            }
 
-            const res = getSentence({ type: defaultValue, start: start, limit: limit })
-
-            res.then(result => {
-                console.log(result)
-                getSentenceData.value[defaultValue].push(...result.data.data)
-            }).catch(error => {
-                console.log(error)
-            })
+            return result.data.data
         }
 
-        init()
+        const renamedObj = {
+            id: '번호',
+            sentence: '문장',
+            origin_id: '교정 문장 번호',
+            worker: '작업자',
+            registrant: '등록자',
+            status: '상태',
+            error_type_near: '근접 오류',
+            error_type_post: '조사 오류',
+            error_type_pron: '유사 발음 오류',
+            error_type_cons: '자음 동화 오류',
+            error_type_spac: '띄어쓰기 오류',
+            error_type_mark: '문장 부호 오류',
+            error_type_etc: '기타 오류',
+            meta_source: '데이터 출처',
+            meta_category: '오류 분류',
+            meta_interface: '입력 장치',
+            meta_keyboard: '입려 키보드',
+            meta_gender: '성별',
+            meta_age: '나이',
+            reg_date: '등록일',
+            modify_date: '수정일',
+            group_name: '그룹'
+        } 
 
-        const excelRead = (e) => {
+        const errorExcelRead = (e) => {
             var input = event.target,
             reader = new FileReader()        
 
@@ -343,6 +370,30 @@ export default {
             })
         }
 
+        const corExcelRead = (e) => {
+            var input = event.target,
+            reader = new FileReader()        
+
+            reader.onload = function() {
+                var fileData = reader.result,
+                wb = read(fileData, {type : 'binary'})
+
+                wb.SheetNames.forEach(function(sheetName, index){
+                    var rowObj = utils.sheet_to_json(wb.Sheets[sheetName])
+                    corSentenceData.value.push(...rowObj)
+                })
+                
+                for(var prop in corSentenceData.value[0]) {
+                    if(prop !== 'sentence') {
+                        corSentenceData.value = []
+                        return alert('데이터 형식이 틀립니다.')
+                    }
+                }
+            }
+                
+            reader.readAsBinaryString(input.files[0])
+        }
+
         const colSentenceSubmit = () => {
             if(corInputText.value === '') return alert('입력된 값이 없습니다.')
             
@@ -354,23 +405,45 @@ export default {
 
             const res = addCorSentece(variable)
             res.then(result => {
-                console.log(result)
                 alert('문장을 추가했습니다.')
                 corInputText.value = ''
             }).catch(error => {
-                console.log(error)
                 alert('문장을 추가하지 못했습니다.')
             })
         }
 
-        const loadExcel = () => {
-            fileElement.value.click()
+        const errorLoadExcel = () => {
+            errorFileElement.value.click()
+        }
+
+        const corLoadExcel = () => {
+            corFileElement.value.click()
+        }
+
+        const corExcelSubmit = () => {
+            if(corSentenceData.value.length === 0) return alert('입력된 문장이 없습니다.')
+
+            const variable = {
+                id: user.userId,
+                group: 'expert',
+                data: corSentenceData.value
+            }
+
+            const res = corExcel(variable)
+            res.then(result => {
+                console.log(result)
+            }).catch(error => {
+                console.log(error)
+            })
         }
 
         return {
-            loadExcel,
-            fileElement,
-            excelRead,
+            errorLoadExcel,
+            corLoadExcel,
+            errorFileElement,
+            corFileElement,
+            errorExcelRead,
+            corExcelRead,
             checkKey,
             sentenceData,
             props,
@@ -382,7 +455,8 @@ export default {
             corInputText,
             getSentenceData,
             toggleButton,
-            toggleButtonValue
+            toggleButtonValue,
+            corExcelSubmit
         }
     }
 }
@@ -416,8 +490,17 @@ td{
     max-width: 250px;
 }
 
+.cor-sentence td:nth-child(2),
 .error-sentence td:nth-child(2),
 .error-sentence td:nth-child(3){
+    text-align: left;
+}
+
+.sentence-manage td{
+    max-width: 250px;
+}
+
+.sentence-manage td:nth-child(2){
     text-align: left;
 }
 

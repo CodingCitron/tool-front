@@ -21,7 +21,7 @@
                     <label for="inputSentence">수집 문장</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" @keyup="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" v-model="inputSentence"></textarea>
+                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" @keyup="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" ref="textareaEl" v-model="inputSentence" autofocus></textarea>
                 </div>
             </div>
             <div class="form-floating d-flex flex-column">
@@ -53,7 +53,8 @@ export default {
         nowSentence = ref(''),
         status = ref(false),
         inputSentence = ref(''),
-        num = ref(0)
+        num = ref(0),
+        textareaEl = ref('')
 
         const store = useStore(),
         user = store.getters['user/GET_USER_INFO']
@@ -73,7 +74,6 @@ export default {
                     nowSentence.value = result.data.result[num.value].sentence
 
                     sentence.value = result.data.result
-                    console.log(sentence.value)
                 }
             }).catch(error => {
                 console.log(error)
@@ -89,25 +89,30 @@ export default {
         const previous = () => {
              if(sentence.value[num.value - 1]){
                 num.value--
+                textareaEl.value.focus()
             }
         }
 
         const next = () => {
             if(sentence.value[num.value + 1]){
                 num.value++
+                textareaEl.value.focus()
             }
         }
 
         const onSubmit = () => {
-            var variable = []
+            var variable = {
+                worker: user.userId,                
+                list: []
+            }
 
             if(!sentence.value.length) return alert('제출할 수 없습니다.')
+
             for(var i = 0; i < sentence.value.length; i++){
                 if(sentence.value[i].error_sentence.trim()){ 
-                    variable.push({
+                    variable.list.push({
                         origin_id: sentence.value[i].id,
                         sentence: sentence.value[i].error_sentence,
-                        worker: user.userId,
                         status: 'B'
                     })
                 } else {
@@ -140,6 +145,10 @@ export default {
 
         const notUseBackspaceKey = (e) => {
             if(e.key === 'Backspace' || e.keyCode === 8) e.preventDefault()
+            if(e.key === 'Enter') {
+                e.preventDefault()
+                next()
+            }
         }
 
         return {
@@ -152,7 +161,8 @@ export default {
             previous,
             next,
             onSubmit,
-            notUseBackspaceKey
+            notUseBackspaceKey,
+            textareaEl
         }
     }
 }

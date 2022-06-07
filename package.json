@@ -12,6 +12,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@popperjs/core": "^2.11.5",
     "axios": "^0.27.2",
     "bootstrap-vue-3": "^0.1.13",
     "chart.js": "^3.8.0",
@@ -21,6 +22,8 @@
     "vue": "^3.2.33",
     "vue-ico": "^1.0.15",
     "vue-router": "^4.0.15",
+    "vue-selectable": "^0.5.0",
+    "vue-simple-context-menu": "^4.0.4",
     "vue3-cookies": "^1.0.6",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0",

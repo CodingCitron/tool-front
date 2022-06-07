@@ -4,7 +4,8 @@
             <h5 class="card-title">{{ title }}</h5>
             <p class="card-text">{{ content }}</p>
             <div class="d-flex justify-content-end">
-                <router-link class="btn btn-primary" :to="{ name: link }">{{ linkName }}</router-link>
+                <router-link class="btn btn-primary" :to="{ name: link }" v-if="!disabled" >{{ linkName }}</router-link>
+                <button class="btn btn-primary" v-if="disabled" disabled>{{ linkName }}</button>
             </div>
         </div>
     </div>
@@ -17,6 +18,7 @@ export default {
         content: String,
         link: String,
         linkName: String,
+        disabled: String
     }
 }
 </script>

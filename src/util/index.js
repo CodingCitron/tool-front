@@ -79,13 +79,46 @@ function getWesternAge(birth) {
     var birthdayy = birth.substr(0, 4),
     birthdaymd = birth.substr(4, 4),
     age = monthDay < birthdaymd ? year - birthdayy - 1 : year - birthdayy
-    
+
     return age
-} 
+}
+
+function renameKeys(mapping, objArr){
+    const renamedObjArr = []
+
+    for(let obj of objArr){
+        const renamedObj = {}
+        
+        for(let [before, after] of Object.entries(mapping)){
+            if(obj.hasOwnProperty(before)){
+                renamedObj[after] = obj[before]
+            }
+        }
+
+        renamedObjArr.push(renamedObj)
+    }
+
+    return renamedObjArr
+}
+
+/* 사용 안함 */
+function selectText() {
+    var selectionText = '' //마우스로 드래그한 글
+                 
+    if (window.getSelection) {
+        selectionText = window.getSelection()
+    } else if (window.selection) {
+        selectionText = window.selection.createRange().text
+    }
+
+    return selectionText
+}
 
 export {
     csvToJSON,
     availableToken,
     copyObj,
-    getWesternAge
+    getWesternAge,
+    renameKeys,
+    selectText
 } 

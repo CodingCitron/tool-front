@@ -54,7 +54,7 @@ export default {
 
             const res = signIn(userData)
             res.then(result => {
-                if(checked.value) cookies.set('myNamePwd', btoa(encodeURIComponent(name.value + '|' + password.value)))
+                if(checked.value) cookies.set('remember', btoa(encodeURIComponent(name.value + '|' + password.value)))
 
                 store.dispatch('user/LOGIN', result.data)
                 router.push({ name: 'main' })
@@ -75,12 +75,12 @@ export default {
         }
 
         watch(checked, () => {
-            if(checked.value) cookies.set('myNamePwd', btoa(encodeURIComponent(name.value + '|' + password.value)))
-            else cookies.remove('myNamePwd')
+            if(checked.value) cookies.set('remember', btoa(encodeURIComponent(name.value + '|' + password.value)))
+            else cookies.remove('remember')
         })
 
         onMounted(() => {
-            let myNamePwd = cookies.get('myNamePwd')
+            let myNamePwd = cookies.get('remember')
     
             if(myNamePwd){
                 myNamePwd = decodeURIComponent(atob(myNamePwd))

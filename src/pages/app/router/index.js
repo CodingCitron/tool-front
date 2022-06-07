@@ -67,6 +67,13 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "InputOriginSentence" */ '../views/InputOriginSentence.vue'),
     },
+    {
+        path: '/authoringtool/22/works/process-sentence',
+        name: 'processSentence',
+        meta: { isLogin: true },
+        component: () =>
+            import(/* webpackChunkName: "InputOriginSentence" */ '../views/ProcessPage.vue'),
+    },
 ]
 
 const router = createRouter({

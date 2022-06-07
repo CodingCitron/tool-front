@@ -24,4 +24,8 @@ function getSentenceCount(type){
     return instance.post('/manage/getSentenceCount', type)
 }
 
-export { allUserCount, userData, importExcel, addCorSentece, getSentence, getSentenceCount }
+function corExcel(data){
+    return instance.post('/manage/cor-excel', data)
+}
+
+export { allUserCount, userData, importExcel, addCorSentece, getSentence, getSentenceCount, corExcel }

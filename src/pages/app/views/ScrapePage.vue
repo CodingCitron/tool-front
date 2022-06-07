@@ -290,7 +290,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .wrap{
   width: 100%;
 }
@@ -314,8 +314,8 @@ export default {
 }
 
 .contents{
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
 }
 
 .sticky-left{
