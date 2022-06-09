@@ -101,7 +101,6 @@ function renameKeys(mapping, objArr){
     return renamedObjArr
 }
 
-/* 사용 안함 */
 function selectText() {
     var selectionText = '' //마우스로 드래그한 글
                  
@@ -114,11 +113,45 @@ function selectText() {
     return selectionText
 }
 
+function selectRange(obj) {
+    if (window.getSelection) {
+        var selected = window.getSelection()
+            selected.selectAllChildren(obj)
+        //console.log(selected.toString());
+    } else if (document.body.createTextRange) {
+        var range = document.body.createTextRange()
+            range.moveToElementText(obj)
+            range.select()
+    }
+}
+
+function isMobile() {
+
+    var user = navigator.userAgent
+    var is_mobile = false
+    
+    if( user.indexOf("iPhone") > -1 
+        || user.indexOf("Android") > -1 
+        || user.indexOf("iPad") > -1
+        || user.indexOf("iPod") > -1
+    ) {
+    
+        is_mobile = true
+        
+    }
+    
+    return is_mobile
+    
+}
+
+
 export {
     csvToJSON,
     availableToken,
     copyObj,
     getWesternAge,
     renameKeys,
-    selectText
+    selectText,
+    selectRange,
+    isMobile
 } 

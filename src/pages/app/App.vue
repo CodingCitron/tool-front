@@ -13,6 +13,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { computed, watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { isMobile } from '@/util'
 
 export default {
   name: 'App',
@@ -32,6 +33,8 @@ export default {
             wide.value = false
         }
     })
+
+    console.log('모바일인가요? ' + isMobile())
 
     return {
       wide

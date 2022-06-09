@@ -8,8 +8,8 @@ function userData(page){
     return instance.post('/manage/userData', page)
 }
 
-function importExcel(excel){
-    return instance.post('/manage/excel', excel)
+function errExcel(data){
+    return instance.post('/manage/err-excel', data)
 }
 
 function addCorSentece(text){
@@ -28,4 +28,4 @@ function corExcel(data){
     return instance.post('/manage/cor-excel', data)
 }
 
-export { allUserCount, userData, importExcel, addCorSentece, getSentence, getSentenceCount, corExcel }
+export { allUserCount, userData, errExcel, addCorSentece, getSentence, getSentenceCount, corExcel }

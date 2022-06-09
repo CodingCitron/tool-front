@@ -21,7 +21,11 @@ function processSentence(userInfo){
     return instance.post('/works/process-sentence', userInfo)
 }
 
-export { scrape, inputCsv, getExpertSentence, inputErrorSentence, processSentence }
+function submitProcessSentence(processData){
+	return instance.post('/works/submit-process-sentence', processData)
+}
+
+export { scrape, inputCsv, getExpertSentence, inputErrorSentence, processSentence, submitProcessSentence }
 
 /*
 	id INTEGER not null AUTO_INCREMENT,

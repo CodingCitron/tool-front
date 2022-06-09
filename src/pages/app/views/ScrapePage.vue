@@ -8,7 +8,7 @@
             <label for="input">교정 문장</label>
           </div>
           <div class="flex-grow-1">
-            <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="originalText"></textarea>
+            <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="corSentence"></textarea>
           </div>
         </div>
         <div class="form-floating mb-3 d-flex flex-column">
@@ -16,14 +16,14 @@
             <label for="paste">수집 문장</label>
           </div>
           <div class="flex-grow-1">
-            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errorText"></textarea>
+            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errSentence"></textarea>
           </div>
         </div>
         <div class="form-floating d-flex flex-column">
           <div class="d-flex justify-content-end mb-2 text-secondary">
-            <span class="ps-1 pe-1">{{ originalText.length }}</span>
+            <span class="ps-1 pe-1">{{ corSentence.length }}</span>
             <span>|</span>
-            <span class="ps-1 pe-1">{{ errorText.length }}</span>
+            <span class="ps-1 pe-1">{{ errSentence.length }}</span>
             <span>|</span>
             <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
           </div>
@@ -45,11 +45,11 @@
               />
           </div>
           <div>
-              <input type="file" class="form-control" @change="readFile">
+              <input type="file" class="form-control hidden" @change="readFile">
           </div>
         </div>
         <div class="overflow-auto">
-          <div class="form-floating background" :class="currentId.id === 1 ? 'active' : 'hidden'">
+          <div class="form-floating background" :class="currentId.id === 2 ? 'active' : 'hidden'">
             <table class="table">
               <thead>
                 <tr>
@@ -63,7 +63,7 @@
               </tbody>
             </table>
           </div>
-          <div class="form-floating background" :class="currentId.id === 2 ? 'active' : 'hidden'">
+          <div class="form-floating background" :class="currentId.id === 1 ? 'active' : 'hidden'">
               <table class="table">
                 <thead>
                   <tr>
@@ -75,8 +75,8 @@
                 <tbody>
                   <tr v-for="(item, i) in pagination.view">
                     <td>{{ i }}</td>
-                    <td>{{ item.originalText }}</td>
-                    <td>{{ item.errorText }}</td>
+                    <td>{{ item.corSentence }}</td>
+                    <td>{{ item.errSentence }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -124,18 +124,19 @@ export default {
     tab = ref([
       {
         id: 1,
-        label: 'CSV 파일',
+        label: '제출한 글 목록',
       },
       {
         id: 2,
-        label: '제출한 글 목록',
-      }
+        label: '엑셀 파일',
+        disabled: true
+      },
     ]),
     tableHeader = ref([]),
     tableBody = ref([]),
     csvJsonData = ref([]),
-    originalText = ref(''),
-    errorText = ref(''),
+    corSentence = ref(''),
+    errSentence = ref(''),
     submittedText = ref([]),
     pagination = ref({
       nowPage: 1, 
@@ -206,13 +207,13 @@ export default {
 
     const textSubmit = () => {
       console.log(submittedText.value)
-      if(originalText.value === '' || errorText.value === '') return alert('텍스트를 입력해 주세요.')
+      if(corSentence.value === '' || errSentence.value === '') return alert('텍스트를 입력해 주세요.')
       
       var variable = {
         userId: user.userId,
         userName: user.userName, 
-        originalText: originalText.value,
-        errorText: errorText.value,
+        corSentence: corSentence.value,
+        errSentence: errSentence.value,
       } 
       
       const res = scrape(variable)
@@ -224,25 +225,24 @@ export default {
 
         submittedText.value.unshift(variable)
 
-        originalText.value = ''
-        errorText.value = ''
-        current.value = 2
-        console.log(result)
+        corSentence.value = ''
+        errSentence.value = ''
+        current.value = 1
       }).catch(error => {
         console.log(error)
       })
     } 
 
     const eraser = () => {
-      originalText.value = ''
-      errorText.value = ''
+      corSentence.value = ''
+      errSentence.value = ''
     }
 
     const csvSubmit = () => {    
       if(!csvJsonData.value.length) return alert('입력된 CSV 파일이 없습니다.')
 
       var variable = []
-      console.log(csvJsonData.value)
+
       for(var i = 1; i < csvJsonData.value.length; i++){
         variable.push({
           sentence: csvJsonData.value[i].error_sentence,
@@ -277,8 +277,8 @@ export default {
       readFile,
       currentId,
       changeTab,
-      originalText,
-      errorText,
+      corSentence,
+      errSentence,
       submittedText,
       pagination,
       pagingBtn,

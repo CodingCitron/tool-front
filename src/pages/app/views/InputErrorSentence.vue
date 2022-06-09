@@ -1,7 +1,7 @@
 <template>
   <div class="container bg-light p-4 rounded contents">
         <section>
-            <h3 class="mb-4">스크립트 입력 - 오류 문장</h3>
+            <h3 class="mb-4">스크립트 입력 - 수집 문장</h3>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
                     <span v-if="sentence.length === 0"></span>
@@ -11,7 +11,7 @@
                     </span>
                 </div>
                 <div class="flex-grow-1">
-                    <p class="form-control origin-sentence" v-bind:class="[status ? 'text-danger' : '']">
+                    <p class="form-control cor-sentence" v-bind:class="[status ? 'text-danger' : '']">
                         {{ nowSentence }}
                     </p>
                 </div>

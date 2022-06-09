@@ -48,7 +48,7 @@
                     </select>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary" @click="errorExcelSubmit" disabled>제출하기</button>
+                    <button type="button" class="btn btn-primary" @click="errorExcelSubmit">제출하기</button>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
 <script>
 import { ref, watch } from 'vue'
 import { read, writeFileXLSX, utils } from 'xlsx'
-import { importExcel, addCorSentece, getSentence, getSentenceCount, corExcel } from '@/api/manage'
+import { errExcel, addCorSentece, getSentence, getSentenceCount, corExcel } from '@/api/manage'
 import { useStore } from 'vuex'
 import { renameKeys } from '@/util' 
 
@@ -343,6 +343,8 @@ export default {
                         return 
                     }
                 }
+
+                console.log(sentenceData.value)
             }
                 
             reader.readAsBinaryString(input.files[0])
@@ -362,7 +364,7 @@ export default {
                 return alert('데이터를 입력하세요.')
             }
 
-            const res = importExcel(variable)
+            const res = errExcel(variable)
             res.then(result => {
                 console.log(result)
             }).catch(error => {

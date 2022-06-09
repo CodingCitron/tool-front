@@ -12,7 +12,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(async function(config){
     config.headers['Authorization'] = store.getters['user/GET_ACCESS_TOKEN']
-        console.log(config)
         return config
     }, function (error){
 
@@ -23,12 +22,10 @@ instance.interceptors.request.use(async function(config){
 instance.interceptors.response.use(
     function (response) {
         // 200대 response를 받아 응답 데이터를 가공하는 작업
-        console.log(response)
         return response
     },
     async function (error) {
         // 200대 이외의 오류 응답을 가공
-        console.log(error)
         const isLogin = store.getters['user/IS_LOGIN'],
         originalConfig = error.config
 
