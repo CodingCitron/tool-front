@@ -3,20 +3,20 @@
     <div class="container contents bg-light p-4 mb-5">
       <section>        
         <h3 class="mb-4">데이터 붙여넣기</h3>
+         <div class="form-floating mb-3 d-flex flex-column">
+          <div class="d-flex align-items-center mb-2">
+            <label for="paste">수집 문장</label>
+          </div>
+          <div class="flex-grow-1">
+            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errSentence"></textarea>
+          </div>
+        </div>
         <div class="form-floating mb-3 d-flex flex-column">
           <div class="d-flex align-items-center mb-2">
             <label for="input">교정 문장</label>
           </div>
           <div class="flex-grow-1">
             <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="corSentence"></textarea>
-          </div>
-        </div>
-        <div class="form-floating mb-3 d-flex flex-column">
-          <div class="d-flex align-items-center mb-2">
-            <label for="paste">수집 문장</label>
-          </div>
-          <div class="flex-grow-1">
-            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errSentence"></textarea>
           </div>
         </div>
         <div class="form-floating d-flex flex-column">
@@ -68,7 +68,7 @@
                 <thead>
                   <tr>
                     <th>구분</th>
-                    <th>원문</th>
+                    <th>교정 문장</th>
                     <th>수집 문장</th>
                   </tr>
                 </thead>
@@ -98,7 +98,7 @@
                   </li>
               </ul>
           </nav>
-          <button type="button" class="btn btn-success mt-2" @click.prevent="csvSubmit">CSV 제출하기
+          <button type="button" class="btn btn-success mt-2 hidden" @click.prevent="csvSubmit">CSV 제출하기
           </button>
         </div>
       </section>
@@ -129,6 +129,7 @@ export default {
       {
         id: 2,
         label: '엑셀 파일',
+        hidden: true,
         disabled: true
       },
     ]),

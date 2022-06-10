@@ -1,11 +1,12 @@
+import axios from 'axios'
 import instance from './index'
 
 function signUp(userData) {
-    return instance.post('/accounts/signup', userData)
+    return instance.post('/accounts/sign-up', userData)
 }
 
 function signIn(userData) {
-    return instance.post('/accounts/signin', userData)
+    return instance.post('/accounts/sign-in', userData)
 }
 
 function requestToken(info){
@@ -21,12 +22,16 @@ function checkLogin(userData){
     return instance.post('/accounts/check-login', userData)
 }
 
-function getUserInfo(id){
-    return instance.post('/accounts/user', id)
+function getUserInfo(){
+    return instance.post('/accounts/user-info')
 }
 
 function updateUserInfo(userData){
     return instance.post('/accounts/update-user', userData)
 }
 
-export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo }
+function getCode(){
+    return axios.post('http://localhost:8000/code2List.do', { m_code_gb: 'COM002' })
+}
+
+export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo, getCode }

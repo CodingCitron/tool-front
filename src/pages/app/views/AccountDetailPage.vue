@@ -21,12 +21,12 @@
                 <label class="form-label">성별</label>
                 </div>
                 <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="male" value="male" disabled v-model="userData.gender">
-                <label class="form-check-label" for="male">남자</label>
+                <input class="form-check-input" type="radio" name="gender" id="male" :value="initData.M.m_code" disabled v-model="userData.gender">
+                <label class="form-check-label" for="male">{{ initData.M.m_code_name }}</label>
                 </div>
                 <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="gender" id="female" value="female" disabled v-model="userData.gender">
-                <label class="form-check-label" for="female">여자</label>
+                <input class="form-check-input" type="radio" name="gender" id="female" :value="initData.F.m_code" disabled v-model="userData.gender">
+                <label class="form-check-label" for="female">{{ initData.F.m_code_name }}</label>
                 </div>
             </div>
             <div class="mb-3">
@@ -80,7 +80,7 @@
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
-import { getUserInfo, updateUserInfo, checkId } from '@/api/user' 
+import { getUserInfo, updateUserInfo, checkId, getCode } from '@/api/user' 
 
 export default {
     setup() {
@@ -97,63 +97,81 @@ export default {
         error = ref(''),
         checkManager = ref(true),
         managerMessage = ref(''),
-        beforeManagerData = ref('')
+        beforeManagerData = ref(''),
+        initData = ref({
+            M: {},
+            F: {},
+        })
 
         const store = useStore(),
         userInfo = store.getters['user/GET_USER_INFO']
 
-        const res = getUserInfo(userInfo.userId)
+        function init(){
+            let resCode = getCode()
+            resCode.then(result => {
+                initData.value.M = result.data.rows[1]
+                initData.value.F = result.data.rows[0]
+            }).catch(error => {
+                console.log(error)
+            })
 
-        res.then(result => {
-            var userInfo = result.data.userInfo,
-            etc = JSON.parse(userInfo.etc)
+            let resUser = getUserInfo()
+        
+            resUser.then(result => {
+                var userInfo = result.data.userInfo
+                var code = initData.value
 
-            userData.value.name = userInfo.user_name
-            userData.value.tel = userInfo.user_id
-            userData.value.birth = userInfo.age
-            userData.value.gender = userInfo.gender === 'm' ? 'male' : 'female'
-            userData.value.auth = etc.auth.join(', ')
-            userData.value.device = etc.device
-            userData.value.keyInterface = etc.keyInterface
-            userData.value.manager = etc.manager
-            beforeManagerData.value = etc.manager
+                userData.value.name = userInfo.user_name
+                userData.value.tel = userInfo.user_id
+                userData.value.birth = userInfo.born_dt
+                userData.value.gender = userInfo.gender === code.M.m_code ? code.M.m_code : code.F.m_code
+                userData.value.auth = userInfo.auth.join(', ')
+                userData.value.device = userInfo.device
+                userData.value.keyInterface = userInfo.keyInterface
+                userData.value.manager = userInfo.manager
+                beforeManagerData.value = userInfo.manager
 
-            if(userData.value.manager !== ''){
-                const variable = {
-                    tel: userData.value.tel
-                }
-
-                const res = checkId(variable)
-                res.then(result => {
-                    if(result.data.message == 1){
-                    // 중복된 전화번호
-                        managerMessage.value = {
-                            message: '',
-                            status: true
-                        }
-                    } else { 
-                        managerMessage.value = {
-                            message: '없는 전화번호',
-                            status: false
-                        }
+                if(userData.value.manager !== ''){
+                    const variable = {
+                        userId: userData.value.tel
                     }
 
-                }).catch(error => {
-                    console.loe(error)
-                })
-            }
+                    let resCheck = checkId(variable)
+                    resCheck.then(result => {
+                        if(result.data.message == 1){
+                        // 중복된 전화번호
+                            managerMessage.value = {
+                                message: '',
+                                status: true
+                            }
+                        } else { 
+                            managerMessage.value = {
+                                message: '없는 전화번호',
+                                status: false
+                            }
+                        }
 
-            if(userData.value.auth.includes('MANAGER')){
-                checkManager.value = false
-            } 
+                    }).catch(error => {
+                        console.loe(error)
+                    })
+                }
 
-        }).catch(error => {
-            console.log(error)
-        })
+                if(userData.value.auth.includes('MANAGER')){
+                    checkManager.value = false
+                } 
+
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+
+        init()
+
+
 
         const onSubmit = () => {
             const variable = {
-                id: userData.value.tel,
+                userId: userData.value.tel,
                 etc: JSON.stringify({
                     device: userData.value.device,
                     manager: userData.value.manager,
@@ -188,7 +206,7 @@ export default {
 
             if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
             const variable = {
-                tel: manager.value
+                userId: manager.value
             }
 
             const res = checkId(variable)
@@ -217,7 +235,8 @@ export default {
             onSubmit,
             checkManager,
             checkManagerId,
-            managerMessage
+            managerMessage,
+            initData
         }
     }
 }

@@ -282,7 +282,7 @@ export default {
 
         const getSentence = () => {
             // console.log('getSentence')
-            const res = processSentence({ id: user.userId })
+            const res = processSentence()
 
             // console.log(selectedText.value)
             selectedText.value.button = []

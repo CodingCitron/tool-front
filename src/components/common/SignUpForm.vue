@@ -20,12 +20,12 @@
               <label class="form-label">성별<span class="text-danger">*</span></label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="gender">
-              <label class="form-check-label" for="male">남자</label>
+              <input class="form-check-input" type="radio" name="gender" id="male" :value="initData.M.m_code" v-model="gender">
+              <label class="form-check-label" for="male">{{ initData.M.m_code_name }}</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="gender">
-              <label class="form-check-label" for="female">여자</label>
+              <input class="form-check-input" type="radio" name="gender" id="female" :value="initData.F.m_code" v-model="gender">
+              <label class="form-check-label" for="female">{{ initData.F.m_code_name }}</label>
             </div>
         </div>
         <div class="mb-3">
@@ -73,7 +73,7 @@
 
 <script>
 import { ref } from 'vue'
-import { signUp, checkId } from '../../api/user.js'
+import { signUp, checkId, getCode } from '../../api/user.js'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { getWesternAge } from '@/util'
@@ -95,7 +95,23 @@ export default {
     managerMessage = ref({
       message: '',
       status: false
+    }),
+    initData = ref({
+      M: {},
+      F: {},
     })
+
+    function init(){
+      const res = getCode()
+      res.then(result => {
+        initData.value.M = result.data.rows[1]
+        initData.value.F = result.data.rows[0]
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+
+    init()
 
     const router = useRouter()
     const store = useStore()
@@ -156,7 +172,8 @@ export default {
           return
         }
       }
-
+      
+      if(!confirm(`전화번호 ${tel.value} 가 맞나요? `)) return
       submit()
     }
 
@@ -169,7 +186,7 @@ export default {
 
       if(!tel.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
       const variable = {
-        tel: tel.value
+        userId: tel.value
       }
 
       const res = checkId(variable)
@@ -236,7 +253,8 @@ export default {
       checkIdValue,
       checkManagerId,
       telMessage,
-      managerMessage
+      managerMessage,
+      initData
     }
   }
 }

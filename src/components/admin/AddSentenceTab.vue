@@ -137,14 +137,14 @@
                             <li class="page-item disabled">
                                 <a class="page-link">Previous</a>
                             </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">1</a>
-                            </li>
-                            <li class="page-item active" aria-current="page">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">3</a>
+                            <li class="page-item" 
+                                v-for="item in paging.pageViewArray" 
+                                :class="[paging.now === item ? 'active': '']"
+                            >
+                                <button class="page-link"  
+                                    @click="paging.start(item)">
+                                    {{ item }}
+                                </button>
                             </li>
                             <li class="page-item">
                                 <a class="page-link" href="#">Next</a>
@@ -253,39 +253,79 @@ export default {
 
         const toggleButton = e => {
             toggleButtonValue.value.now = e.target.value
+            paging.value.nowView = e.target.value
         }
 
         watch(toggleButtonValue.value, () => {
-            getData(toggleButtonValue.value.now, 0, 10)
+            paging.value.start(1)
         })
 
         const paging = ref({
-            start: 0,
-            limit: 10
+            start: function(page){
+                const { total, limit, nowView } = paging.value, 
+                start = (page - 1) * limit
+
+                if(start < 0){
+                    start = 1
+                }
+
+                getSentenceData.value.correction = [],
+                getSentenceData.value.error = [],
+                getSentenceData.value.mix = []
+
+                const res = getSentence({ type: nowView, start: start, limit: limit })
+
+                    res.then(result => {
+                        console.log(result)
+
+                    result.data.data = renameKeys(renamedObj, result.data.data)
+
+                    getSentenceData.value.th[nowView] = Object.keys(result.data.data[0])
+                    getSentenceData.value[nowView].push(...dataSort(result))
+                    paging.value.total[nowView] = result.data.count
+                    paging.value.calcPage() 
+                    paging.value.calcLength()
+                    paging.value.now = page
+                }).catch(error => {
+                    console.log(error)
+                })
+            },
+            now: 1, 
+            total: {
+                correction: 0, 
+                error: 0,
+                mix: 0
+            },
+            limit: 10,
+            page: 0,
+            calcPage: function(){
+                const { total, limit, nowView } = paging.value 
+                paging.value.page = Math.ceil(total[nowView] / limit)
+            },
+            length: 10,
+            pageViewArray: [],
+            calcLength: function(){
+                paging.value.pageViewArray = []
+
+                const { now, page, length, limit } = paging.value,
+                pageStart = Math.ceil(now / limit),
+                pageEnd = Math.ceil(now / limit) * limit,
+                thisPagelength = page < pageEnd ? page : pageEnd,
+                array = []
+
+                for(let i = pageStart; i <= thisPagelength; i++){
+                    array.push(i)
+                }
+
+                paging.value.pageViewArray = array
+            },
+            nowView: 'correction'
         })
-
-        function getData(view, start, limit){
-            getSentenceData.value.correction = [],
-            getSentenceData.value.error = [],
-            getSentenceData.value.mix = []
-
-            const res = getSentence({ type: view, start: start, limit: limit })
-
-            res.then(result => {
-                result.data.data = renameKeys(renamedObj, result.data.data)
-
-                getSentenceData.value.th[view] = Object.keys(result.data.data[0])
-                getSentenceData.value[view].push(...dataSort(result))
-
-            }).catch(error => {
-                console.log(error)
-            })
-        }
 
         const store = useStore(),
         user = store.getters['user/GET_USER_INFO']
         
-        getData('correction', 0, 10)
+        paging.value.start(1)
 
         function dataSort(result){
             for(var i = 0; i < result.data.data.length; i++){
@@ -458,7 +498,8 @@ export default {
             getSentenceData,
             toggleButton,
             toggleButtonValue,
-            corExcelSubmit
+            corExcelSubmit,
+            paging
         }
     }
 }

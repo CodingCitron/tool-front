@@ -9,16 +9,16 @@ function inputCsv(inputData) {
     return instance.post('/works/csv', inputData)
 }
 
-function getExpertSentence(userInfo){
-    return instance.post(`/works/expert-sentence`, userInfo)
+function getExpertSentence(){
+    return instance.post(`/works/expert-sentence`)
 }
 
 function inputErrorSentence(inputData){
     return instance.post(`/works/error-sentence`, inputData)
 }
 
-function processSentence(userInfo){
-    return instance.post('/works/process-sentence', userInfo)
+function processSentence(){
+    return instance.post('/works/process-sentence')
 }
 
 function submitProcessSentence(processData){

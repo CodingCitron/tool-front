@@ -60,7 +60,7 @@ export default {
         user = store.getters['user/GET_USER_INFO']
 
         const init = () => {
-            const res = getExpertSentence(user)
+            const res = getExpertSentence()
 
             res.then(result => {
                 if(result.data.result == 0){
