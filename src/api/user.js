@@ -11,7 +11,7 @@ function signIn(userData) {
 
 function requestToken(info){
     // console.log('토큰 재발급')
-    return instance.post('/accounts/token', info)
+    return instance.post('/accounts/request-token', info)
 }
 
 function checkId(id){
