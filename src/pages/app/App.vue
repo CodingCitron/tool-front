@@ -13,6 +13,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { computed, watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { getCode } from '@/api/user'
 import { isMobile } from '@/util'
 
 export default {
@@ -35,6 +36,17 @@ export default {
     })
 
     console.log('모바일인가요? ' + isMobile())
+
+    function init(){
+      const res = getCode({ m_code_gb: 'COM011' })
+      res.then(result => {
+        console.log(result)
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+
+    init()
 
     return {
       wide

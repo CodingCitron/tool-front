@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in sentenceData" v-if="sentenceData">
-                        <td>{{ index }}</td>
+                        <td>{{ item.id }}</td>
                         <td>{{ item.cor_sentence }}</td>
                         <td>{{ item.error_sentence }}</td>
                         <td>{{ item.error_type_near }}</td>
@@ -129,12 +129,15 @@
                         <tr v-for="(obj, index) in getSentenceData[toggleButtonValue.now]">
                             <td v-for="item in obj">{{ item }}</td>
                         </tr>
+                        <tr v-if="!getSentenceData[toggleButtonValue.now].length">
+                            <td>입력된 데이터가 없습니다.</td>
+                        </tr>
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-center align-item-center">
                     <nav aria-label="...">
                         <ul class="pagination">
-                            <li class="page-item disabled">
+                            <li class="page-item" v-if="paging.prev">
                                 <a class="page-link">Previous</a>
                             </li>
                             <li class="page-item" 
@@ -146,7 +149,7 @@
                                     {{ item }}
                                 </button>
                             </li>
-                            <li class="page-item">
+                            <li class="page-item" v-if="paging.next">
                                 <a class="page-link" href="#">Next</a>
                             </li>
                         </ul>
@@ -279,7 +282,9 @@ export default {
                         console.log(result)
 
                     result.data.data = renameKeys(renamedObj, result.data.data)
+                    paging.value.pageViewArray = []
 
+                    if(result.data.data.length === 0) return
                     getSentenceData.value.th[nowView] = Object.keys(result.data.data[0])
                     getSentenceData.value[nowView].push(...dataSort(result))
                     paging.value.total[nowView] = result.data.count
@@ -307,7 +312,7 @@ export default {
             calcLength: function(){
                 paging.value.pageViewArray = []
 
-                const { now, page, length, limit } = paging.value,
+                const { now, page, length, limit, total, nowView } = paging.value,
                 pageStart = Math.ceil(now / limit),
                 pageEnd = Math.ceil(now / limit) * limit,
                 thisPagelength = page < pageEnd ? page : pageEnd,
@@ -316,10 +321,15 @@ export default {
                 for(let i = pageStart; i <= thisPagelength; i++){
                     array.push(i)
                 }
+                console.log(Math.ceil(total[nowView] / limit))
+                paging.value.prev = now > length ? true : false
+                paging.value.next = (now + limit) >= Math.ceil(total[nowView] / limit) ? false : true  
 
                 paging.value.pageViewArray = array
             },
-            nowView: 'correction'
+            nowView: 'correction',
+            prev: false,
+            next: false
         })
 
         const store = useStore(),
@@ -406,7 +416,8 @@ export default {
 
             const res = errExcel(variable)
             res.then(result => {
-                console.log(result)
+                sentenceData.value = []
+                alert('데이터가 추가되었습니다.')
             }).catch(error => {
                 console.log(error)
             })
@@ -464,7 +475,7 @@ export default {
 
         const corExcelSubmit = () => {
             if(corSentenceData.value.length === 0) return alert('입력된 문장이 없습니다.')
-
+            console.log(corSentenceData.value)
             const variable = {
                 id: user.userId,
                 group: 'expert',
@@ -473,6 +484,8 @@ export default {
 
             const res = corExcel(variable)
             res.then(result => {
+                alert('데이터가 추가되었습니다.')
+                corSentenceData.value = []
                 console.log(result)
             }).catch(error => {
                 console.log(error)
@@ -524,6 +537,10 @@ th{
 
 td{
     vertical-align: middle;
+}
+
+.cor-sentence{
+    font-size: 14px;
 }
 
 .error-sentence td:nth-child(2),

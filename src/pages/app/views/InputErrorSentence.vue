@@ -45,7 +45,7 @@ import { ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import router from '@/pages/app/router'
-import { getExpertSentence, inputErrorSentence } from '@/api/work'
+import { getExpertSentence, inputErrorSentence, getErrorSentence } from '@/api/work'
 
 export default {
     setup(){

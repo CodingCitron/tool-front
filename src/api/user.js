@@ -30,8 +30,9 @@ function updateUserInfo(userData){
     return instance.post('/accounts/update-user', userData)
 }
 
-function getCode(){
-    return axios.post('http://localhost:8000/code2List.do', { m_code_gb: 'COM002' })
+// { m_code_gb: 'COM002' }
+function getCode(code){
+    return axios.post('http://localhost:8000/code2List.do', code)
 }
 
 export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo, getCode }

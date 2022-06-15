@@ -1,6 +1,6 @@
 <template>
-  <header id="header">
-        <nav :class="[wide? 'container-fluid bg-light' :'container']">
+  <header id="header" :class="[wide? 'fixed-top bg-light': '']" class="shadow-sm">
+        <nav :class="[wide? 'container-fluid' :'container']">
             <h1 title="고빈도 오류 교정 데이터"><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
             <div class="right-menu">
                 <DropDownMenu v-if="isLogin"/>

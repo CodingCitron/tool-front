@@ -8,7 +8,7 @@
             <label for="paste">수집 문장</label>
           </div>
           <div class="flex-grow-1">
-            <textarea class="form-control" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errSentence"></textarea>
+            <textarea :class="status? 'text-danger form-control' : 'form-control'" placeholder="paste(게시판 글 붙여넣는 곳)" id="paste" v-model="errSentence" readonly></textarea>
           </div>
         </div>
         <div class="form-floating mb-3 d-flex flex-column">
@@ -16,7 +16,7 @@
             <label for="input">교정 문장</label>
           </div>
           <div class="flex-grow-1">
-            <textarea class="form-control" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="corSentence"></textarea>
+            <textarea :class="status? 'text-danger form-control' : 'form-control'" :disabled="status" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="corSentence"></textarea>
           </div>
         </div>
         <div class="form-floating d-flex flex-column">
@@ -110,7 +110,7 @@
 import { csvToJSON } from '@/util'
 import { ref } from '@vue/reactivity'
 import { computed, watch } from '@vue/runtime-core'
-import { scrape, inputCsv } from '@/api/work'
+import { scrape, inputCsv, getErrorSentence } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
 
@@ -138,6 +138,7 @@ export default {
     csvJsonData = ref([]),
     corSentence = ref(''),
     errSentence = ref(''),
+    sentenceData = ref({}),
     submittedText = ref([]),
     pagination = ref({
       nowPage: 1, 
@@ -145,7 +146,29 @@ export default {
       length: 0,
       getLength: 10,
       view: []
-    })
+    }),
+
+    status = ref(false) 
+
+    function getError(){
+      const res = getErrorSentence()
+      res.then(result => {
+        if(result.data && result.data.data){
+          var data = result.data.data
+          sentenceData.value = data
+          errSentence.value = data.sentence
+          corSentence.value = data.temp_sentence
+        }
+      }).catch(error => {
+          errSentence.value = '가져올 수 있는 문장이 없습니다.'
+          corSentence.value = '가져올 수 있는 문장이 없습니다.'
+
+          status.value = true
+          console.log(error)
+      })
+    }
+
+    getError()
 
     watch(submittedText.value, (newCount, oldCount) => {
       var len = submittedText.value.length
@@ -207,28 +230,26 @@ export default {
     }
 
     const textSubmit = () => {
-      console.log(submittedText.value)
+      console.log(sentenceData.value)
       if(corSentence.value === '' || errSentence.value === '') return alert('텍스트를 입력해 주세요.')
-      
+
       var variable = {
-        userId: user.userId,
-        userName: user.userName, 
+        id: sentenceData.value.id,
         corSentence: corSentence.value,
         errSentence: errSentence.value,
       } 
       
       const res = scrape(variable)
-
+      
       res.then(result => {
-        if(result.data.message === 'duplicate'){
-          return alert('중복 문장입니다.')
-        }
-
         submittedText.value.unshift(variable)
 
-        corSentence.value = ''
-        errSentence.value = ''
+        // corSentence.value = ''
+        // errSentence.value = ''
         current.value = 1
+
+        getError()
+
       }).catch(error => {
         console.log(error)
       })
@@ -285,7 +306,8 @@ export default {
       pagingBtn,
       textSubmit,
       eraser,
-      csvSubmit
+      csvSubmit,
+      status
     }
   },
 }

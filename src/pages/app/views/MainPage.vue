@@ -18,9 +18,6 @@
         <Card title="수집 - 스크립트 입력" content="교정 문장을 보고 수집 문장을 입력하세요." link="inputErrorSentence" linkName="작업하기" />
       </div>
       <div class="p-2 col-xxl-3 col-xl-4 col-lg-4 col-md-6">
-        <Card title="수집 - 스크립트 입력 (원문)" content="수집 문장을 보고 교정 문장을 입력하세요." link="inputOriginSentence" linkName="작업하기" disabled="true" />
-      </div>
-      <div class="p-2 col-xxl-3 col-xl-4 col-lg-4 col-md-6">
         <Card title="가공 - 스크립트 가공" content="수집 문장의 오류를 입력하세요." link="processSentence" linkName="작업하기" />
       </div>
     </div>

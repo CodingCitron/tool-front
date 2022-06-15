@@ -102,7 +102,7 @@ export default {
     })
 
     function init(){
-      const res = getCode()
+      const res = getCode({ m_code_gb: 'COM002' })
       res.then(result => {
         initData.value.M = result.data.rows[1]
         initData.value.F = result.data.rows[0]

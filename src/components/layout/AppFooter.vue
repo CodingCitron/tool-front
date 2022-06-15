@@ -1,5 +1,5 @@
 <template>
-  <footer id="footer">
+  <footer id="footer" class="shadow-sm">
       <div :class="[wide? 'container-fluid bg-light' :'container']">
           <div></div>
           <div>

@@ -147,7 +147,6 @@ export default {
                 background: 'yellow',
                 color: 'black',
                 border: '2px solid black'
-
             },
             {
                 name: '유사 발음 오류',
@@ -157,7 +156,6 @@ export default {
                 background: 'green',
                 color: 'white',
                 border: '2px solid black'
-
             },
             {
                 name: '자음 동화 오류',
@@ -167,7 +165,6 @@ export default {
                 background: 'blue',
                 color: 'white',
                 border: '2px solid black'
-
             },
             {
                 name: '띄어쓰기 오류',
@@ -177,7 +174,6 @@ export default {
                 background: 'silver',
                 color: 'white',
                 border: '2px solid black'
-
             },
             {
                 name: '문장부호 오류',
@@ -187,7 +183,6 @@ export default {
                 background: 'purple',
                 color: 'white',
                 border: '2px solid black'
-
             },
             {
                 name: '기타 오류',
@@ -197,7 +192,6 @@ export default {
                 background: 'tomato',
                 color: 'white',
                 border: '2px solid black'
-
             },
         ])
 

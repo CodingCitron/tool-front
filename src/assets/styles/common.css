@@ -233,6 +233,16 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.fixed-top{
+    position: fixed;
+    top: 0;
+}
+
+.fixed-bottom{
+    position: bottom;
+    bottom: 0;
+}
+
 @media screen and (max-height: 900px) { /* max - 최대 900px - 900 이하  1150 이상  */
     /*
     main {
