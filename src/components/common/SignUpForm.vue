@@ -55,6 +55,31 @@
             </div>
         </div>
         <div class="mb-3">
+            <div>
+              <label class="form-label">그룹<span class="text-danger">*</span></label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group" id="notSelectGroup" value="notSelectGroup" v-model="group">
+              <label class="form-check-label" for="notSelectGroup">선택 없음</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group" id="ufit" value="ufit" v-model="group">
+              <label class="form-check-label" for="ufit">유핏</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group" id="edutech" value="edutech" v-model="group">
+              <label class="form-check-label" for="edutech">에듀테크</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group" id="megastudy" value="megastudy" v-model="group">
+              <label class="form-check-label" for="megastudy">메가스터디</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="group" id="saltluxInnovation" value="saltluxInnovation" v-model="group">
+              <label class="form-check-label" for="saltluxInnovation">솔트룩스이노베이션</label>
+            </div>
+        </div>
+        <div class="mb-3">
             <label for="manager" class="d-flex form-label justify-content-between">
               <span>매니저</span>
               <span :class="[managerMessage.status ? 'text-success' : 'text-danger' ]">{{ managerMessage.message }}</span>
@@ -88,6 +113,7 @@ export default {
     keyInterface = ref(''),
     manager = ref(''),
     error = ref(''),
+    group = ref('notSelectGroup'),
     telMessage = ref({
       message: '',
       status: false
@@ -124,6 +150,7 @@ export default {
           birth: birth.value,
           gender: gender.value,
           device: device.value,
+          group: group.value,
           keyInterface: keyInterface.value,
           manager: manager.value,
           auth: ['WORKER']
@@ -217,7 +244,7 @@ export default {
 
       if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
       const variable = {
-        tel: manager.value
+        userId: manager.value
       }
 
       const res = checkId(variable)
@@ -248,6 +275,7 @@ export default {
       device,
       keyInterface,
       manager,
+      group,
       checkForm,
       error,
       checkIdValue,

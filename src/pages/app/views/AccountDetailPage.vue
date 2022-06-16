@@ -59,6 +59,31 @@
                 <label for="birth" class="form-label">권한</label>
                 <input type="text" class="form-control" id="auth" readonly v-model="userData.auth" placeholder="19900101">
             </div>
+            <div class="mb-3">
+                <div>
+                    <label class="form-label">그룹<span class="text-danger">*</span></label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="group" id="notSelectGroup" value="notSelectGroup" v-model="userData.group">
+                    <label class="form-check-label" for="notSelectGroup">선택 없음</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="group" id="ufit" value="ufit" v-model="userData.group">
+                    <label class="form-check-label" for="ufit">유핏</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="group" id="edutech" value="edutech"  v-model="userData.group">
+                    <label class="form-check-label" for="edutech">에듀테크</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="group" id="megastudy" value="megastudy" v-model="userData.group">
+                    <label class="form-check-label" for="megastudy">메가스터디</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="group" id="saltluxInnovation" value="saltluxInnovation" v-model="userData.group">
+                    <label class="form-check-label" for="saltluxInnovation">솔트룩스이노베이션</label>
+                </div>
+            </div>
             <div class="mb-3" v-if="checkManager">
                 <label for="manager" class="d-flex form-label justify-content-between">
                 <span>매니저</span>
@@ -92,6 +117,7 @@ export default {
             auth: '',
             device: '',
             keyInterface: '',
+            group: '',
             manager: '',
         }),
         error = ref(''),
@@ -107,7 +133,7 @@ export default {
         userInfo = store.getters['user/GET_USER_INFO']
 
         function init(){
-            let resCode = getCode()
+            let resCode = getCode({ m_code_gb: 'COM002' })
             resCode.then(result => {
                 initData.value.M = result.data.rows[1]
                 initData.value.F = result.data.rows[0]
@@ -118,6 +144,7 @@ export default {
             let resUser = getUserInfo()
         
             resUser.then(result => {
+                console.log(result)
                 var userInfo = result.data.userInfo
                 var code = initData.value
 
@@ -128,6 +155,7 @@ export default {
                 userData.value.auth = userInfo.auth.join(', ')
                 userData.value.device = userInfo.device
                 userData.value.keyInterface = userInfo.keyInterface
+                userData.value.group = userInfo.group ? userInfo.group : 'notSelectGroup'  
                 userData.value.manager = userInfo.manager
                 beforeManagerData.value = userInfo.manager
 
@@ -176,6 +204,7 @@ export default {
                     device: userData.value.device,
                     manager: userData.value.manager,
                     auth: userData.value.auth.split(', '),
+                    group: userData.value.group,
                     keyInterface: userData.value.keyInterface
                 }),
                 beforeManagerData: beforeManagerData.value

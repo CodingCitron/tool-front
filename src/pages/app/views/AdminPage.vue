@@ -94,6 +94,7 @@ export default {
 .contents{
     width: 100%;
     padding-left: 240px;
+    margin-top: 55px;
     border: transparent;
 }
 

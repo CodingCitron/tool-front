@@ -110,7 +110,7 @@
 import { csvToJSON } from '@/util'
 import { ref } from '@vue/reactivity'
 import { computed, watch } from '@vue/runtime-core'
-import { scrape, inputCsv, getErrorSentence } from '@/api/work'
+import { postMegaData, inputCsv, getMegaData } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
 
@@ -151,7 +151,7 @@ export default {
     status = ref(false) 
 
     function getError(){
-      const res = getErrorSentence()
+      const res = getMegaData()
       res.then(result => {
         if(result.data && result.data.data){
           var data = result.data.data
@@ -164,7 +164,6 @@ export default {
           corSentence.value = '가져올 수 있는 문장이 없습니다.'
 
           status.value = true
-          console.log(error)
       })
     }
 
@@ -230,7 +229,7 @@ export default {
     }
 
     const textSubmit = () => {
-      console.log(sentenceData.value)
+      if(status.value) return alert('제출할 수 없습니다.')
       if(corSentence.value === '' || errSentence.value === '') return alert('텍스트를 입력해 주세요.')
 
       var variable = {
@@ -239,7 +238,7 @@ export default {
         errSentence: errSentence.value,
       } 
       
-      const res = scrape(variable)
+      const res = postMegaData(variable)
       
       res.then(result => {
         submittedText.value.unshift(variable)

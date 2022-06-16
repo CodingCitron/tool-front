@@ -47,29 +47,22 @@ const routes = [
             import(/* webpackChunkName: "MainPage" */ '../views/MainPage.vue'),
     },
     {
-        path: '/authoringtool/22/works/scrape',
-        name: 'scrape',
+        path: '/authoringtool/22/works/correction-mega',
+        name: 'correctionMegaPage',
         meta: { isLogin: true },
         component: () =>
-            import(/* webpackChunkName: "ScrapePage" */ '../views/ScrapePage.vue'),
+            import(/* webpackChunkName: "ScrapePage" */ '../views/CorrectionMegaPage.vue'),
     },
     {
-        path: '/authoringtool/22/works/error-sentence',
-        name: 'inputErrorSentence',
+        path: '/authoringtool/22/works/correction-expert',
+        name: 'correctionExpertPage',
         meta: { isLogin: true },
         component: () =>
-            import(/* webpackChunkName: "InputErrorSentence" */ '../views/InputErrorSentence.vue'),
-    },
-    {
-        path: '/authoringtool/22/works/origin-sentence',
-        name: 'inputOriginSentence',
-        meta: { isLogin: true },
-        component: () =>
-            import(/* webpackChunkName: "InputOriginSentence" */ '../views/InputOriginSentence.vue'),
+            import(/* webpackChunkName: "postExpertData" */ '../views/CorrectionExpertPage.vue'),
     },
     {
         path: '/authoringtool/22/works/process-sentence',
-        name: 'processSentence',
+        name: 'processPage',
         meta: { isLogin: true },
         component: () =>
             import(/* webpackChunkName: "InputOriginSentence" */ '../views/ProcessPage.vue'),

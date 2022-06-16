@@ -35,19 +35,19 @@ export default {
         }
     })
 
+  /*
     console.log('모바일인가요? ' + isMobile())
 
-    function init(){
+    function getCode(){
       const res = getCode({ m_code_gb: 'COM011' })
       res.then(result => {
-        console.log(result)
       }).catch(error => {
-        console.log(error)
       })
     }
 
-    init()
-
+    getCode()
+  */
+ 
     return {
       wide
     }

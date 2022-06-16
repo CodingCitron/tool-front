@@ -72,7 +72,7 @@ import { ref } from '@vue/reactivity'
 import { createApp, watchEffect, watch, onMounted } from 'vue'
 import VueSimpleContextMenu from 'vue-simple-context-menu'
 import { selectText } from '@/util'
-import { processSentence, submitProcessSentence } from '@/api/work'
+import { getProcessData, postProcessData } from '@/api/work'
 import { useStore } from 'vuex'
 // import hljs from 'highlight.js'
 // import css from 'highlight.js/lib/languages/css'
@@ -276,7 +276,7 @@ export default {
 
         const getSentence = () => {
             // console.log('getSentence')
-            const res = processSentence()
+            const res = getProcessData()
 
             // console.log(selectedText.value)
             selectedText.value.button = []
@@ -414,7 +414,7 @@ export default {
 
             variable.processJson = JSON.stringify({xml: selectedText.value.xmlData})
 
-            const res = submitProcessSentence(variable)
+            const res = postProcessData(variable)
 
             res.then(result => {
                 // console.log(result)

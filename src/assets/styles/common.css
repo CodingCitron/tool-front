@@ -256,3 +256,14 @@ pre {
     }
     */
 }
+
+@media screen and (max-width: 768px) { /* max - 최대 900px - 900 이하  1150 이상  */
+    .err-sentence,
+    .cor-sentence{
+        font-size: 14px;
+    }
+
+    main .container.p-4{
+        padding: 1rem !important;
+    }
+}
