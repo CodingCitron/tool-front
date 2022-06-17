@@ -1,24 +1,35 @@
 <template>
-    <div class="card">
+    <div class="card" :class="[hidden? 'hidden' : '']">
         <div class="card-body">
             <h5 class="card-title">{{ title }}</h5>
             <p class="card-text">{{ content }}</p>
             <div class="d-flex justify-content-end">
-                <router-link class="btn btn-primary" :to="{ name: link }" v-if="!disabled" >{{ linkName }}</router-link>
-                <button class="btn btn-primary" v-if="disabled" disabled>{{ linkName }}</button>
+                <router-link class="btn btn-primary" :to="{ name: link, query: { inspection } }" v-if="!disabled" >{{ linkName }}</router-link>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { ref } from '@vue/reactivity'
+import { onMounted, watch } from '@vue/runtime-core'
+
 export default {
     props: {
         title: String,
         content: String,
         link: String,
         linkName: String,
-        disabled: String
+        disabled: String,
+        workGroup: String,
+        inspection: Boolean,
+        hidden: Boolean
+    },
+
+    setup(props){
+        return {
+
+        }
     }
 }
 </script>

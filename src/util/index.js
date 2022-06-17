@@ -117,7 +117,7 @@ function selectRange(obj) {
     if (window.getSelection) {
         var selected = window.getSelection()
             selected.selectAllChildren(obj)
-        //console.log(selected.toString());
+            
     } else if (document.body.createTextRange) {
         var range = document.body.createTextRange()
             range.moveToElementText(obj)
@@ -144,6 +144,61 @@ function isMobile() {
     
 }
 
+function Pagination(limit){
+    this.start
+    this.end 
+    this.limit = limit
+    this.pageSize
+    this.nowPage = 1
+    this.data = []
+    this.nowData = []
+    this.nowPagingBtn = []
+    this.viewPageLength = 10
+}
+
+Pagination.prototype.calcProps = function(data, count){
+    if(data) this.data = data
+    const { limit, nowPage } = this
+    
+    if(this.data.length > limit){ // 데이터를 한번에 받아 페이징 처리 
+        this.pageSize = Math.ceil(this.data.length / limit)
+        this.start = Math.ceil(nowPage/limit) - 1
+        this.end = Math.ceil(nowPage/limit) * limit
+
+        this.nowData = this.data.slice((nowPage - 1) * limit, nowPage * limit)
+        this.nowPagingBtn = this.pageSize < this.end ? 
+        createNumArray(this.start + 1, this.pageSize + 1) :
+        createNumArray(this.start + 1, this.end + 1)
+        
+        function createNumArray(start, end){
+            let array = []
+
+            for(let i = start; i < end; i++){
+                array.push(i)
+            }
+
+            return array
+        }
+
+    } else { // count* required 
+        // 전체 개수를 받아서 계산
+
+    }
+}
+
+Pagination.prototype.setPage = function(page){
+    this.nowPage = page
+    this.calcProps()
+}
+
+Pagination.prototype.prev = function(page){
+    console.log('prev')
+}
+
+Pagination.prototype.next = function(page){
+    console.log('next')
+}
+
 
 export {
     csvToJSON,
@@ -153,5 +208,6 @@ export {
     renameKeys,
     selectText,
     selectRange,
-    isMobile
+    isMobile,
+    Pagination
 } 

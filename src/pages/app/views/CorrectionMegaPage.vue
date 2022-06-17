@@ -113,6 +113,7 @@ import { computed, watch } from '@vue/runtime-core'
 import { postMegaData, inputCsv, getMegaData } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 
 export default {
   components: {
@@ -120,6 +121,10 @@ export default {
   },
 
   setup(){
+    const route = useRoute()
+
+    console.log(route.query) // 검수 페이지인지 작업 페이지인지 구분
+
     const current = ref(1),
     tab = ref([
       {

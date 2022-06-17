@@ -1,5 +1,5 @@
 <template>
-    <div :class="[props.view === props.name ? '' : 'hidden']">
+    <div>
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h3>설정</h3>
         </div>
@@ -16,7 +16,6 @@ export default {
     setup(props){
 
         return {
-            props
         }
     }
 }

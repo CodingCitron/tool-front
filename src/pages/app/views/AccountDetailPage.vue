@@ -61,7 +61,7 @@
             </div>
             <div class="mb-3">
                 <div>
-                    <label class="form-label">그룹<span class="text-danger">*</span></label>
+                    <label class="form-label">그룹<span class="text-danger"></span></label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="group" id="notSelectGroup" value="notSelectGroup" v-model="userData.group">

@@ -3,11 +3,7 @@
         <Sidebar @tabHandler="tabHandler" :tab="tab"/>
         <div class="contents">
             <div class="padding">
-                <AddSentenceTab :view="nowView" :name="tab.AddSentenceTab.name" />
-                <AddVoiceTab :view="nowView" :name="tab.AddVoiceTab.name" />
-                <ManageWorkerTab :view="nowView" :name="tab.ManageWorker.name" />
-                <StatisticsTab :view="nowView" :name="tab.StatisticsTab.name" />
-                <SettingTab :view="nowView" :name="tab.SettingTab.name" />
+                <component :is="nowView"></component>
             </div>
         </div>
     </div>

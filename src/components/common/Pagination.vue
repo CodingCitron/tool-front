@@ -12,7 +12,18 @@
 
 <script>
 export default {
-    
+    props: {
+
+    },
+
+    setup(){
+        
+
+
+        return {
+
+        }
+    }
 }
 </script>
 

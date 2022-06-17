@@ -28,4 +28,8 @@ function corExcel(data){
     return instance.post('/manage/cor-excel', data)
 }
 
-export { allUserCount, userData, errExcel, addCorSentece, getSentence, getSentenceCount, corExcel }
+function getUserData(limit){
+    return instance.post('/manage/get-user-data', limit)
+}
+
+export { allUserCount, userData, errExcel, addCorSentece, getSentence, getSentenceCount, corExcel, getUserData }

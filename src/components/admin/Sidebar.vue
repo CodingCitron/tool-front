@@ -1,7 +1,7 @@
 <template>
   <aside id="sidebar" class="" @click="e => $emit('tabHandler', e)">
         <ul class="nav">
-            <li v-for="item in props.tab">
+            <li v-for="item in tab">
                 <button type="button" class="p-2" :value="item.name" >{{ item.btnName }}</button>
             </li>
         </ul>
@@ -18,7 +18,7 @@ export default {
     
     setup(props){
         return {
-            props
+            
         }
     }
 }

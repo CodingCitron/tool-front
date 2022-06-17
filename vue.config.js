@@ -25,11 +25,9 @@ module.exports = {
     },
     devServer: { 
         port: 3000,
-        host: '0.0.0.0',
-        /* 사용하지 말것 ▼
-        개발할때는 끔 ▽ 포트가 2개 일때만 사용 
-        스프링 부트 서버에서 프론트 포트를 허용해주면 사용하지 않아도 됨
-        */
+        // host: '0.0.0.0',
+        // disableHostCheck: true
+
         /*
         proxy: {
             '/authoringtool/22': {

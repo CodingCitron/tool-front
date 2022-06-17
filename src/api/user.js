@@ -32,7 +32,13 @@ function updateUserInfo(userData){
 
 // { m_code_gb: 'COM002' }
 function getCode(code){
-    return axios.post('http://localhost:8000/code2List.do', code)
+    console.log(process.env)
+    return axios.post(`${process.env.VUE_APP_CROWOKRS_BASE_URL}code2List.do`, code)
 }
 
-export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo, getCode }
+// 나의 작업
+function getMyworks(option){
+    return instance.post('/accounts/get-works', option)
+}
+
+export { signUp, signIn, requestToken, checkId, checkLogin, getUserInfo, updateUserInfo, getCode, getMyworks }

@@ -7,8 +7,10 @@ const instance = axios.create({
         'Content-Type': 'application/json; charset=utf-8',
         'Access-Control-Allow-Origin': '*',
     },
-    baseURL: process.env.VUE_APP_DEV_API_URL,
+    baseURL: process.env.VUE_APP_API_URL,
 })
+
+console.log(process.env.VUE_APP_API_URL)
 
 instance.interceptors.request.use(async function(config){
     config.headers['Authorization'] = store.getters['user/GET_ACCESS_TOKEN']

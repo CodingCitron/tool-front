@@ -16,10 +16,15 @@
             <button type="submit" class="btn btn-primary" @click.prevent="onSubmit">로그인</button>
             <router-link :to="{ name: 'signUp' }" class="btn btn-primary">회원가입</router-link>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 hidden">
             <p class="text-danger">{{ message }}</p>
         </div>
     </form>
+    <Modal :contents="message" :isOpen="isOpen" close="확인" closeStyle="btn btn-danger" @close="modalClose">
+        <div>
+            <p class="text-danger">{{ message }}</p>
+        </div>
+    </Modal>
 </template>
 
 <script>
@@ -27,16 +32,22 @@ import { onMounted, ref, watch } from 'vue'
 import { signIn } from '../../api/user.js'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { useCookies } from "vue3-cookies";
+import { useCookies } from 'vue3-cookies';
+import Modal from '@/components/common/Modal'
 
 export default {
+    components: {
+        Modal
+    },
+
     setup(){
         const name = ref(''),
         password = ref(''),
         message = ref(''),
-        checked = ref('')
+        checked = ref(''),
+        isOpen = ref(false)
 
-        const { cookies } = useCookies();
+        const { cookies } = useCookies()
         
         const router = useRouter()
         const store = useStore()
@@ -49,6 +60,7 @@ export default {
 
             if(!checkBlank(userData)){
                 message.value = '이름, 전화번호를 입력해 주세요.'
+                isOpen.value = true
                 return
             }
 
@@ -61,6 +73,7 @@ export default {
             }).catch(error => {
                 console.log(error)
                 message.value = error.response.data.result
+                isOpen.value = true
             })
         }
 
@@ -90,12 +103,18 @@ export default {
             }
         })
 
+        const modalClose = () => {
+            isOpen.value = false
+        }
+
         return {
             name,
             password,
             message,
             onSubmit,
-            checked
+            checked,
+            isOpen,
+            modalClose
         }
     },
 

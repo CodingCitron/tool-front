@@ -1,7 +1,7 @@
 <template>
-    <div :class="[props.view === props.name ? '' : 'hidden']">
+    <div>
         <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="d-flex justify-content-between align-items-center mb-1 rounded">
                 <h3>수집 문장 추가하기</h3>
                 <div class="d-flex gap-1">
                     <div>
@@ -10,7 +10,7 @@
                     <button type="button" class="btn btn-primary" @click="errorLoadExcel">엑셀 파일 추가</button>
                 </div>
             </div>
-            <table class="table table-hover shadow-sm error-sentence">
+            <table class="table table-hover shadow-sm error-sentence rounded">
                 <thead>
                     <tr>
                         <th v-for="item in checkKey.errorText" :class="[item[1]? item[1] : '']">{{ item[0] }}</th>
@@ -40,7 +40,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end align-items-center gap-2">
+            <div class="d-flex justify-content-end align-items-center gap-2 rounded">
                 <div>
                     <select class="form-select" aria-label="Default select example" v-model="senteceGroupInfo">
                         <!-- <option selected value="">그룹 선택*</option> -->
@@ -75,22 +75,50 @@
                     </div>
                 </div>
                 <div class="width-50">
-                    <table class="table table-hover shadow-sm cor-sentence">
+                    <table class="table table-hover shadow-sm cor-sentence rounded">
                         <thead>
                             <tr>
                                 <th v-for="item in checkKey.corText" :class="[item[1]? item[1] : '']">{{ item[0] }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item, index) in corSentenceData" v-if="corSentenceData">
-                                <td>{{ index }}</td>
+                            <tr v-for="(item, index) in corSentencePaging.nowData" v-if="corSentencePaging.nowData">
+                                <td>{{ item.__rowNum__ }}</td>
                                 <td>{{ item.sentence }}</td>
                             </tr>
-                            <tr v-if="!corSentenceData[0]" class="text-center">
+                            <tr v-if="!corSentencePaging.nowData.length" class="text-center">
                                 <td colspan="2">입력된 데이터가 없습니다.</td>
                             </tr>
                         </tbody>
                     </table>
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center align-item-center">
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" @click="corSentencePaging.prev()" 
+                                    v-if="corSentencePaging.nowPage > corSentencePaging.viewPagelength"
+                                    >Previous</a>
+                                </li>
+                                <li class="page-item" 
+                                    v-for="item in corSentencePaging.nowPagingBtn" 
+                                    :class="[corSentencePaging.nowPage === item ? 'active': '']"
+                                >
+                                    <button class="page-link"  
+                                        @click="corSentencePaging.setPage(item)">
+                                        {{ item }}
+                                    </button>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" @click="corSentencePaging.next()"
+                                    v-if="Math.ceil(corSentencePaging.nowPage/corSentencePaging.viewPageLength) 
+                                    < Math.ceil(corSentencePaging.pageSize/corSentencePaging.viewPageLength)"
+                                    >Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- Pagination -->
                     <div class="d-flex justify-content-end align-items-center gap-2">
                         <div>
                             <select class="form-select" aria-label="Default select example" v-model="corSenteceGroupInfo">
@@ -117,7 +145,7 @@
                 </div>
             </div>
             <div>
-                <table class="table table-hover shadow-sm sentence-manage">
+                <table class="table table-hover shadow-sm sentence-manage rounded">
                     <thead>
                         <tr>
                             <th v-for="item in getSentenceData.th[toggleButtonValue.now]">
@@ -169,7 +197,7 @@ import { ref, watch } from 'vue'
 import { read, writeFileXLSX, utils } from 'xlsx'
 import { errExcel, addCorSentece, getSentence, getSentenceCount, corExcel } from '@/api/manage'
 import { useStore } from 'vuex'
-import { renameKeys } from '@/util' 
+import { renameKeys, Pagination } from '@/util' 
 
 export default {
     props: {
@@ -235,6 +263,8 @@ export default {
                 mix: [],
             }
         })
+
+        const corSentencePaging = ref(new Pagination(10))
 
         const toggleButtonValue = ref({
             button: [
@@ -431,7 +461,7 @@ export default {
                 var fileData = reader.result,
                 wb = read(fileData, {type : 'binary'})
 
-                wb.SheetNames.forEach(function(sheetName, index){
+                wb.SheetNames.forEach(function(sheetName){
                     var rowObj = utils.sheet_to_json(wb.Sheets[sheetName])
                     corSentenceData.value.push(...rowObj)
                 })
@@ -442,6 +472,9 @@ export default {
                         return alert('데이터 형식이 틀립니다.')
                     }
                 }
+                
+                corSentencePaging.value.calcProps(corSentenceData.value)
+                console.log(corSentencePaging)
             }
                 
             reader.readAsBinaryString(input.files[0])
@@ -475,7 +508,7 @@ export default {
 
         const corExcelSubmit = () => {
             if(corSentenceData.value.length === 0) return alert('입력된 문장이 없습니다.')
-            console.log(corSentenceData.value)
+
             const variable = {
                 id: user.userId,
                 group: 'expert',
@@ -486,7 +519,6 @@ export default {
             res.then(result => {
                 alert('데이터가 추가되었습니다.')
                 corSentenceData.value = []
-                console.log(result)
             }).catch(error => {
                 console.log(error)
             })
@@ -501,7 +533,6 @@ export default {
             corExcelRead,
             checkKey,
             sentenceData,
-            props,
             errorExcelSubmit,
             senteceGroupInfo,
             corSentenceData,
@@ -512,13 +543,18 @@ export default {
             toggleButton,
             toggleButtonValue,
             corExcelSubmit,
-            paging
+            paging,
+            corSentencePaging
         }
     }
 }
 </script>
 
 <style scoped>
+main{
+    padding-top: 0;
+}
+
 table{
     min-height: 100px;
     background: #fff;

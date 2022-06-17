@@ -10,12 +10,18 @@
             <li>
                 <button class="dropdown-item" disabled>가이드</button>
             </li>
+            <!--
             <li>
-                <button class="dropdown-item" disabled>마이 페이지</button>
+                <router-link class="dropdown-item" :to="{ name: 'mypage' }">마이 페이지</router-link>
+            </li>
+            -->
+            <li>
+                <router-link class="dropdown-item" :to="{ name: 'myworks' }">나의작업</router-link>
             </li>
             <li>
                 <router-link class="dropdown-item" :to="{ name: 'accountDetail' }">개인정보</router-link>
             </li>
+            
             <li v-if="authCheck()">
                 <router-link class="dropdown-item" :to="{ name: 'manage' }">관리</router-link>
             </li>

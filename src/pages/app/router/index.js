@@ -22,6 +22,20 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "AccountDetailPage" */ '../views/AccountDetailPage.vue'),
     },
+    //{
+    //    path: '/authoringtool/22/mypage',
+    //    name: 'mypage',
+    //    meta: { isLogin: true },
+    //    component: () =>
+    //        import(/* webpackChunkName: "InputOriginSentence" */ '../views/Mypage.vue'),
+    //},
+    {
+        path: '/authoringtool/22/myworks',
+        name: 'myworks',
+        meta: { isLogin: true },
+        component: () =>
+            import(/* webpackChunkName: "InputOriginSentence" */ '../views/Myworks.vue'),
+    },
     {
         path: '/authoringtool/22/manage',
         name: 'manage',
@@ -50,6 +64,7 @@ const routes = [
         path: '/authoringtool/22/works/correction-mega',
         name: 'correctionMegaPage',
         meta: { isLogin: true },
+        props: true,
         component: () =>
             import(/* webpackChunkName: "ScrapePage" */ '../views/CorrectionMegaPage.vue'),
     },
@@ -57,6 +72,7 @@ const routes = [
         path: '/authoringtool/22/works/correction-expert',
         name: 'correctionExpertPage',
         meta: { isLogin: true },
+        props: true,
         component: () =>
             import(/* webpackChunkName: "postExpertData" */ '../views/CorrectionExpertPage.vue'),
     },
@@ -64,6 +80,7 @@ const routes = [
         path: '/authoringtool/22/works/process-sentence',
         name: 'processPage',
         meta: { isLogin: true },
+        props: true,
         component: () =>
             import(/* webpackChunkName: "InputOriginSentence" */ '../views/ProcessPage.vue'),
     },

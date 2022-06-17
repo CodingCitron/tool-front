@@ -1,8 +1,8 @@
 <template>
-    <div :class="[props.view === props.name ? '' : 'hidden']">
+    <div>
         <h3>작업자 관리</h3>
         <div>
-            <table class="table table-hover shadow-sm">
+            <table class="table table-hover shadow-sm rounded">
                 <thead>
                     
                 </thead>
@@ -16,6 +16,7 @@
 
 <script>
 import { ref } from 'vue'
+import { getUserData } from '@/api/manage'
 
 export default {
     props: {
@@ -24,8 +25,20 @@ export default {
     },
 
     setup (props) {
+        const setTable = (limit) => {
+            const res = getUserData(limit)
+
+            res.then(result => {
+                console.log(result)
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+
+        setTable({ start: 0, end: 10 })
+        
         return {
-            props
+
         }
     }
 }
