@@ -13,8 +13,12 @@
             <label class="form-check-label" for="exampleCheck1">이름, 전화번호 기억</label>
         </div>
         <div class="d-grid gap-2 mb-3">
-            <button type="submit" class="btn btn-primary" @click.prevent="onSubmit">로그인</button>
-            <router-link :to="{ name: 'signUp' }" class="btn btn-primary">회원가입</router-link>
+            <button type="submit" class="
+            common-button-blue 
+            " @click.prevent="onSubmit">로그인</button>
+            <router-link :to="{ name: 'signUp' }" class="
+            common-button-blue 
+            ">회원가입</router-link>
         </div>
         <div class="mb-3 hidden">
             <p class="text-danger">{{ message }}</p>

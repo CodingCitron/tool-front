@@ -1,8 +1,8 @@
 import instance from './index'
 
-// A - 1
-function getMegaData(){
-	return instance.post('/works/get-mega-data')
+// A - 1 pageType Boolean
+function getMegaData(pageType){
+	return instance.post('/works/get-mega-data', pageType)
 }
 
 function postMegaData(inputData) {

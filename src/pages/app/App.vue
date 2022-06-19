@@ -4,11 +4,13 @@
     <router-view />
   </main>
   <AppFooter v-bind:wide="wide" />
+  <Toast />
 </template>
 
 <script>
 import AppHeader from '@/components/layout/AppHeader'
 import AppFooter from '@/components/layout/AppFooter'
+import Toast from '@/components/common/Toast'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { computed, watch } from '@vue/runtime-core'
@@ -16,11 +18,13 @@ import { ref } from '@vue/reactivity'
 import { getCode } from '@/api/user'
 import { isMobile } from '@/util'
 
+
 export default {
   name: 'App',
   components: {
     AppHeader,
     AppFooter,
+    Toast
   },
 
   setup(){

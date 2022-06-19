@@ -1,5 +1,5 @@
 <template>
-  <header id="header" :class="[wide? 'fixed-top bg-light': '']" class="shadow-sm">
+  <header id="header" :class="[wide? 'fixed-top bg-light': '']">
         <nav :class="[wide? 'container-fluid' :'container']">
             <h1 title="고빈도 오류 교정 데이터"><router-link :to="{ name: 'main' }">22번 저작도구</router-link></h1>
             <div class="right-menu">
@@ -52,6 +52,10 @@ h1,
     margin: 0;
     font-size: 24px;
     color: #212529;
+}
+
+h1{
+    font-weight: 600;
 }
 
 a:hover{

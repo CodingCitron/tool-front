@@ -59,7 +59,7 @@
               <label class="form-label">그룹<span class="text-danger">*</span></label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="group" id="notSelectGroup" value="notSelectGroup" v-model="group">
+              <input class="form-check-input" type="radio" name="group" id="notSelectGroup" value="" v-model="group">
               <label class="form-check-label" for="notSelectGroup">선택 없음</label>
             </div>
             <div class="form-check form-check-inline">

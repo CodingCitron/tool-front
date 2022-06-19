@@ -117,7 +117,7 @@ function selectRange(obj) {
     if (window.getSelection) {
         var selected = window.getSelection()
             selected.selectAllChildren(obj)
-            
+
     } else if (document.body.createTextRange) {
         var range = document.body.createTextRange()
             range.moveToElementText(obj)
@@ -141,7 +141,6 @@ function isMobile() {
     }
     
     return is_mobile
-    
 }
 
 function Pagination(limit){
@@ -198,7 +197,6 @@ Pagination.prototype.prev = function(page){
 Pagination.prototype.next = function(page){
     console.log('next')
 }
-
 
 export {
     csvToJSON,

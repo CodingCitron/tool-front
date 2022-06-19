@@ -1,7 +1,7 @@
 <template>
   <div class="container bg-light p-4 rounded contents">
         <section>
-            <h3 class="mb-4">스크립트 입력 - 수집 문장</h3>
+            <h3 class="mb-4">{{ pageType.inspection? '검수 - ' : '수집 - ' }}스크립트 입력</h3>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
                     <span v-if="sentence.length === 0"></span>
@@ -36,7 +36,8 @@
                 <div class="d-flex justify-content-end gap-2">
                     <button class="btn btn-success hidden" @click="previous">이전 문장</button>
                     <button class="btn btn-success hidden" @click="next">다음 문장</button>
-                    <button class="btn btn-success" @click="onSubmit">제출 하기</button>
+                    <router-link class="btn btn-success" :to="{ name: 'main' }">작업 선택</router-link>
+                    <button class="btn btn-success" @click="onSubmit">다음 문장</button>
                 </div>
             </div>
         </section>
@@ -48,10 +49,17 @@ import { ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import router from '@/pages/app/router'
+import { useRoute } from 'vue-router'
 import { getExpertData, postExpertData, getMegaData } from '@/api/work'
 
 export default {
     setup(){
+        const route = useRoute()
+
+        const pageType = { 
+            inspection: (route.query.inspection === 'true')
+        } 
+
         const sentence = ref([]),
         nowSentence = ref(''),
         status = ref(false),
@@ -174,7 +182,8 @@ export default {
             next,
             onSubmit,
             notUseBackspaceKey,
-            textareaEl
+            textareaEl,
+            pageType
         }
     }
 }

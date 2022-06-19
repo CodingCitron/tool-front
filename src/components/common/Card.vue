@@ -4,7 +4,8 @@
             <h5 class="card-title">{{ title }}</h5>
             <p class="card-text">{{ content }}</p>
             <div class="d-flex justify-content-end">
-                <router-link class="btn btn-primary" :to="{ name: link, query: { inspection } }" v-if="!disabled" >{{ linkName }}</router-link>
+                <router-link :class="[inspection? 'common-button-green'
+                : 'common-button-blue']" :to="{ name: link, query: { inspection } }" v-if="!disabled" >{{ linkName }}</router-link>
             </div>
         </div>
     </div>
@@ -42,10 +43,14 @@ export default {
 
 .card-title{
     font-weight: 600;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .card:hover{
     box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
+}
+.common-button-blue
+.common-button-green{
+    font-size: 14px;
 }
 </style>

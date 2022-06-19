@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="container contents bg-light p-4 mb-5">
       <section>        
-        <h3 class="mb-4">데이터 붙여넣기</h3>
+        <h3 class="mb-4">{{ pageType.inspection? '검수 - ' : '수집 - ' }} 데이터 붙여넣기</h3>
          <div class="form-floating mb-3 d-flex flex-column">
           <div class="d-flex align-items-center mb-2">
             <label for="paste">수집 문장</label>
@@ -28,8 +28,9 @@
             <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
           </div>
         </div>
-        <div class="d-flex justify-content-end">
-            <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
+        <div class="d-flex justify-content-end gap-2">
+            <router-link class="btn btn-success" :to="{ name: 'main' }">작업 선택</router-link>
+            <button class="btn btn-success" @click.prevent="textSubmit">다음 문장</button>
         </div>
       </section>
     </div>
@@ -123,7 +124,9 @@ export default {
   setup(){
     const route = useRoute()
 
-    console.log(route.query) // 검수 페이지인지 작업 페이지인지 구분
+    const pageType = { 
+      inspection: (route.query.inspection === 'true')
+    } 
 
     const current = ref(1),
     tab = ref([
@@ -156,7 +159,7 @@ export default {
     status = ref(false) 
 
     function getError(){
-      const res = getMegaData()
+      const res = getMegaData(pageType)
       res.then(result => {
         if(result.data && result.data.data){
           var data = result.data.data
@@ -179,7 +182,6 @@ export default {
       pagination.value.length = len
       pagination.value.pageLength = Math.ceil(len/pagination.value.getLength)
 
-      console.log(pagination.value)
       pagingBtn(pagination.value.nowPage)
     })
 
@@ -241,6 +243,7 @@ export default {
         id: sentenceData.value.id,
         corSentence: corSentence.value,
         errSentence: errSentence.value,
+        inspection: pageType.inspection
       } 
       
       const res = postMegaData(variable)
@@ -311,7 +314,8 @@ export default {
       textSubmit,
       eraser,
       csvSubmit,
-      status
+      status,
+      pageType
     }
   },
 }

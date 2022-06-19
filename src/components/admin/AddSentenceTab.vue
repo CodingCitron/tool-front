@@ -127,7 +127,7 @@
                             </select>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-primary" @click="corExcelSubmit">제출하기</button>
+                            <button type="button" class="btn btn-primary" @click="postExpertSentenceSubmit">제출하기</button>
                         </div>
                     </div>
                 </div>
@@ -188,14 +188,14 @@
     </div>
     <div>
         <input type="file" class="hidden" ref="errorFileElement" @change="errorExcelRead">
-        <input type="file" class="hidden" ref="corFileElement" @change="corExcelRead">
+        <input type="file" class="hidden" ref="corFileElement" @change="postExpertSentenceRead">
     </div>
 </template>
 
 <script>
 import { ref, watch } from 'vue'
 import { read, writeFileXLSX, utils } from 'xlsx'
-import { errExcel, addCorSentece, getSentence, getSentenceCount, corExcel } from '@/api/manage'
+import { postMegaExcel, postExpertExcel, getSentence, getSentenceCount, postExpertSentence } from '@/api/manage'
 import { useStore } from 'vuex'
 import { renameKeys, Pagination } from '@/util' 
 
@@ -444,7 +444,7 @@ export default {
                 return alert('데이터를 입력하세요.')
             }
 
-            const res = errExcel(variable)
+            const res = postMegaExcel(variable)
             res.then(result => {
                 sentenceData.value = []
                 alert('데이터가 추가되었습니다.')
@@ -453,7 +453,7 @@ export default {
             })
         }
 
-        const corExcelRead = (e) => {
+        const postExpertSentenceRead = (e) => {
             var input = event.target,
             reader = new FileReader()        
 
@@ -474,7 +474,6 @@ export default {
                 }
                 
                 corSentencePaging.value.calcProps(corSentenceData.value)
-                console.log(corSentencePaging)
             }
                 
             reader.readAsBinaryString(input.files[0])
@@ -489,7 +488,7 @@ export default {
                 group: 'expert'
             }
 
-            const res = addCorSentece(variable)
+            const res = postExpertSentence(variable)
             res.then(result => {
                 alert('문장을 추가했습니다.')
                 corInputText.value = ''
@@ -506,19 +505,23 @@ export default {
             corFileElement.value.click()
         }
 
-        const corExcelSubmit = () => {
+        const postExpertSentenceSubmit = () => {
             if(corSentenceData.value.length === 0) return alert('입력된 문장이 없습니다.')
-
-            const variable = {
+           
+           const variable = {
                 id: user.userId,
                 group: 'expert',
                 data: corSentenceData.value
             }
 
-            const res = corExcel(variable)
+            const res = postExpertExcel(variable)
             res.then(result => {
                 alert('데이터가 추가되었습니다.')
                 corSentenceData.value = []
+                corSentencePaging.value.nowData = []
+                corSentencePaging.value.nowPagingBtn = []
+
+                corSentencePaging.value.calcProps([])
             }).catch(error => {
                 console.log(error)
             })
@@ -530,7 +533,7 @@ export default {
             errorFileElement,
             corFileElement,
             errorExcelRead,
-            corExcelRead,
+            postExpertSentenceRead,
             checkKey,
             sentenceData,
             errorExcelSubmit,
@@ -542,7 +545,7 @@ export default {
             getSentenceData,
             toggleButton,
             toggleButtonValue,
-            corExcelSubmit,
+            postExpertSentenceSubmit,
             paging,
             corSentencePaging
         }

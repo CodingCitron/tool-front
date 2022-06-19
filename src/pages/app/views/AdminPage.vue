@@ -1,5 +1,5 @@
 <template>
-    <div class="wrap bg-light">
+    <div class="wrap">
         <Sidebar @tabHandler="tabHandler" :tab="tab"/>
         <div class="contents">
             <div class="padding">
@@ -83,15 +83,16 @@ export default {
 
 <style scoped>
 .wrap{
-    min-height: calc(100vh - 135px);
     width: 100%;
+    margin-top: 55px;
 }
 
 .contents{
     width: 100%;
+    min-height: calc(100vh - 135px);
     padding-left: 240px;
-    margin-top: 55px;
     border: transparent;
+    background: #f8f9fa;
 }
 
 .padding{

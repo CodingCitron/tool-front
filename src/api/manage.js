@@ -1,35 +1,27 @@
 import instance from './index'
 
-function allUserCount(){
-    return instance.post('/manage/count-user')
+// 문장관리 탭
+function postMegaExcel(data){
+    return instance.post('/manage/post-mega-excel', data)
 }
 
-function userData(page){
-    return instance.post('/manage/userData', page)
-}
-
-function errExcel(data){
-    return instance.post('/manage/err-excel', data)
-}
-
-function addCorSentece(text){
-    return instance.post('/manage/addSentence', text)
+function postExpertExcel(text){
+    return instance.post('/manage/post-expert-excel', text)
 }
 
 function getSentence(type){
-    return instance.post('/manage/getSentence', type)
+    return instance.post('/manage/get-sentence', type)
 }
 
-function getSentenceCount(type){
-    return instance.post('/manage/getSentenceCount', type)
+function postExpertSentence(data){
+    return instance.post('/manage/post-expert-sentence', data)
 }
+// 문장관리 탭
 
-function corExcel(data){
-    return instance.post('/manage/cor-excel', data)
-}
-
+// 작업자 탭
 function getUserData(limit){
     return instance.post('/manage/get-user-data', limit)
 }
+// 작업자 탭
 
-export { allUserCount, userData, errExcel, addCorSentece, getSentence, getSentenceCount, corExcel, getUserData }
+export { postMegaExcel, postExpertExcel, getSentence, postExpertSentence, getUserData }

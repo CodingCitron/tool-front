@@ -93,10 +93,10 @@ export default {
     resUser.then(result => {
       group.value = result.data.userInfo.group
       const auth = result.data.userInfo.auth
-      
+
       // 권한이 작업자고  ADMIN은 다 보임
       if(auth.includes('ADMIN')) return
-      if(group.value === 'saltluxInnovation') return
+      if(group.value === 'saltluxInnovation' || group.value === 'notSelectGroup') return
       for(let i = 0; i < cardData.value.length; i++){
         if(group.value !== cardData.value[i].workGroup){
             cardData.value[i].hidden = true
@@ -109,7 +109,7 @@ export default {
     
     return {
       data,
-      cardData
+      cardData,
     }
   }
 }
