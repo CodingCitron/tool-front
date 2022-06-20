@@ -3,7 +3,7 @@
         @contextmenu.prevent="handleClick($event)"
         >
         <section>
-            <h3 class="mb-4">스크립트 가공</h3>
+            <h3 class="mb-4">스크립트 가공 {{ pageType.inspection? '- 검수' : '' }}</h3>
             <div class="form-floating mb-3">
                 <div class="d-flex align-items-center mb-2">
                     교정 문장
@@ -68,11 +68,13 @@
 </template>
 
 <script>
+import { nextTick } from 'vue'
 import { ref } from '@vue/reactivity'
-import { createApp, watchEffect, watch, onMounted } from 'vue'
+import { createApp, watchEffect, watch, onMounted, onRenderTracked } from 'vue'
 import VueSimpleContextMenu from 'vue-simple-context-menu'
 import { selectText } from '@/util'
 import { getProcessData, postProcessData } from '@/api/work'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 // import hljs from 'highlight.js'
 // import css from 'highlight.js/lib/languages/css'
@@ -84,6 +86,12 @@ export default {
     },
 
     setup(props, context){
+        const route = useRoute()
+
+        const pageType = { 
+            inspection: (route.query.inspection === 'true')
+        } 
+
         const vueSimpleContextMenu = ref(null),
         dragedText = ref(selectText()),
         selectedText = ref({
@@ -276,7 +284,7 @@ export default {
 
         const getSentence = () => {
             // console.log('getSentence')
-            const res = getProcessData()
+            const res = getProcessData(pageType)
 
             // console.log(selectedText.value)
             selectedText.value.button = []
@@ -284,7 +292,7 @@ export default {
             res.then(result => {    
                 // console.log(result)
                 if(result && result.data.data){
-
+                    console.log(result)
                     var data = result.data.data
                     senteceObj.value.id = data.id
                     senteceObj.value.orgin_id = data.orgin_id
@@ -301,7 +309,10 @@ export default {
                     senteceObj.value.error_type_mark = 0
                     senteceObj.value.error_type_etc = 0
 
-                    xmlParse(data.errSentence)
+                    var xml = data.process_data? JSON.parse(data.process_data).xml : null
+
+                    xmlParse(data.errSentence, xml)
+                  
                 }
 
                 if(result && result.data.message == 0){
@@ -327,43 +338,69 @@ export default {
             // hljs.highlightElement(document.querySelector('#xmlView'))
         })
 
-        function xmlParse(errText){
-            let errorSentenceArea = document.getElementById('errorSentenceArea')
-            if(!errorSentenceArea) return
-            // console.log(errText)
-            let text = errorSentenceArea? errorSentenceArea.innerHTML : ''
+        function xmlParse(errText, processData){
+            let errorSentenceArea,
+            text,
+            xml,
+            html,
+            array
 
-            if(errText || errText === ''){
-                selectedText.value.xmlData = errText === ''? '' : `<sentence>${errText}</sentence>`
-                selectedText.value.viewXmlData =  errText === ''? '' : `<sentence>${errText}</sentence>`
-                return
+            if(!processData){
+                errorSentenceArea = document.getElementById('errorSentenceArea')
+                if(!errorSentenceArea) return
+                // console.log(errText)
+                text = errorSentenceArea? errorSentenceArea.innerHTML : ''
+
+                if(errText || errText === ''){
+                    selectedText.value.xmlData = errText === ''? '' : `<sentence>${errText}</sentence>`
+                    selectedText.value.viewXmlData =  errText === ''? '' : `<sentence>${errText}</sentence>`
+                    return
+                }
+
+                if(!processData && !text) {
+                    selectedText.value.xmlData = ''
+                    selectedText.value.viewXmlData = ''
+                    return 
+                }
+
+                xml = `<sentence>${text}</sentence>`
+                xml = xml.replace(/(<span)(.+?)(<\s?\/\s?span>)/gi, '<error$2</error>')
+
+            } else {
+                xml = processData
+                html = xml.replace(/(<error)(.+?)(<\s?\/\s?error>)/gi, '<span$2</span>')
+                html = html.replace(/<(\/sentence|sentence)([^>]*)>/gi, '')
+
+                array = html.match(/<span[^>]*>/gi)
+                console.log(array)
+                for(let i = 0; i < array.length; i++){
+                    html = html.replace(
+                        array[i], 
+                        array[i].replace('type=', `data-span-id="${selectedText.value.cnt}" data-error=`)
+                    )
+                    selectedText.value.cnt++
+                }
             }
-
-            if(!text) {
-                selectedText.value.xmlData = ''
-                selectedText.value.viewXmlData = ''
-                return 
-            }
-
-            let xml = `<sentence>${text}</sentence>`
             
             // <error$2</error><![CDATA[Line 1 <br />]]>
-            xml = xml.replace(/(<span)(.+?)(<\s?\/\s?span>)/gi, '<error$2</error>')
-            
             if (window.DOMParser){
                 var parser = new DOMParser()
                 var xmlDoc = parser.parseFromString(xml, "text/xml")
             }
             
             //console.log(xmlDoc.getElementsByTagName('error').removeAttribute('data-span-id'))
+            
+            if(!processData){
+                let errorTag = xmlDoc.getElementsByTagName('error')
 
-            let errorTag = xmlDoc.getElementsByTagName('error')
+                for(let i = 0; i < errorTag.length; i++){
+                    errorTag[i].setAttribute('type', errorTag[i].getAttribute('data-error'))
+                    errorTag[i].removeAttribute('data-span-id')
+                    errorTag[i].removeAttribute('style')
+                    errorTag[i].removeAttribute('data-error')
+                }
+            } else {
 
-            for(let i = 0; i < errorTag.length; i++){
-                errorTag[i].setAttribute('type', errorTag[i].getAttribute('data-error'))
-                errorTag[i].removeAttribute('data-span-id')
-                errorTag[i].removeAttribute('style')
-                errorTag[i].removeAttribute('data-error')
             }
 
             selectedText.value.xmlData = new XMLSerializer().serializeToString(xmlDoc)
@@ -381,11 +418,15 @@ export default {
 
             selectedText.value.viewXmlData = selectedText.value.xmlData
             
-            // string -> xml 
-            // new DOMParser().parseFromString(selectedText.value.xmlData, 'text/xml')
+            if(processData){
+                nextTick(() => {
+                    let errorSentenceArea = document.getElementById('errorSentenceArea')
+                    errorSentenceArea.innerHTML = html
+                })
+            }
 
-            // console.log(selectedText.value.viewXmlData)
-            // console.log(selectedText.value.xmlData)
+            console.log(xml)
+            console.log(html)
         }
 
         function removeOneSpan(id){
@@ -435,7 +476,8 @@ export default {
             selectedText,
             removeSpan,
             removeOneSpan,
-            onSubmitHandler
+            onSubmitHandler,
+            pageType
         }
     }   
 }

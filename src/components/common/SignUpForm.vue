@@ -87,8 +87,8 @@
             <input type="text" class="form-control" id="manager" @keyup="checkManagerId" v-model="manager" placeholder="매니저 전화번호 입력">
         </div>
         <div class="d-flex gap-2 button-list mb-3">
-            <button type="submit" class="btn btn-primary" @click.prevent="checkForm">가입하기</button>
-            <router-link class="btn btn-primary" :to="{ name: 'signIn' }">취소</router-link>
+            <button type="submit" class="common-button-blue" @click.prevent="checkForm">가입하기</button>
+            <router-link class="common-button-green" :to="{ name: 'signIn' }">취소</router-link>
         </div>
         <div>
           <span class="text-danger">{{ error }}</span>
@@ -113,7 +113,7 @@ export default {
     keyInterface = ref(''),
     manager = ref(''),
     error = ref(''),
-    group = ref('notSelectGroup'),
+    group = ref(''),
     telMessage = ref({
       message: '',
       status: false
@@ -251,9 +251,9 @@ export default {
       res.then(result => {
         console.log(result)
         if(result.data.message == 1){
-          // 중복된 전화번호
+          // 전화번호 존재
           managerMessage.value = {
-            message: '',
+            message: '사용 가능',
             status: true
           }
         } else { 

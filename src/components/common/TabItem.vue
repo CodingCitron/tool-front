@@ -1,5 +1,5 @@
 <template>
-  <button @click="$emit('input', id)" :class="[active, 'btn btn-outline-primary']">
+  <button @click="$emit('input', id)" :class="[active, 'common-button-blue']">
     {{ label }}
   </button>
 </template>

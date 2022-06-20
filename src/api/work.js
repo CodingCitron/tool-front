@@ -11,8 +11,8 @@ function postMegaData(inputData) {
 // A - 1
 
 // A - 2
-function getExpertData(){
-    return instance.post(`/works/get-expert-data`)
+function getExpertData(pageType){
+    return instance.post(`/works/get-expert-data`, pageType)
 }
 
 function postExpertData(inputData){
@@ -21,8 +21,8 @@ function postExpertData(inputData){
 // A - 2
 
 // C 
-function getProcessData(){
-    return instance.post('/works/get-process-data')
+function getProcessData(pageType){
+    return instance.post('/works/get-process-data', pageType)
 }
 
 function postProcessData(processData){

@@ -59,7 +59,7 @@ export default {
         hidden: false
       },
       {
-        title: '수집 - 데이터 붙여넣기',
+        title: '수집 - 검수 - 스크립트 입력',
         content: '수집 문장 검수',
         workGroup: 'ufit',
         link: 'correctionExpertPage',

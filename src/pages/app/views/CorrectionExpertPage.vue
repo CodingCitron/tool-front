@@ -7,7 +7,7 @@
                     <span v-if="sentence.length === 0"></span>
                     <span>교정 문장 
                         <span v-if="sentence.length === 0"></span>
-                        <span v-else>{{ sentence.length }}</span>
+                        <!-- <span v-else>{{ sentence.length }}</span> -->
                     </span>
                 </div>
                 <div class="flex-grow-1">
@@ -21,12 +21,13 @@
                     <label for="inputSentence">수집 문장</label>
                 </div>
                 <div class="flex-grow-1">
-                    <textarea class="form-control" @keydown="notUseBackspaceKey" @keypress="notUseBackspaceKey" @keyup="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" ref="textareaEl" v-model="inputSentence" autofocus></textarea>
+                    <textarea class="form-control" @keydown="e => { enter(e), notUseBackspaceKey(e) }" @keypress="notUseBackspaceKey" @keyup="notUseBackspaceKey" placeholder="수집 문장 입력하기" id="inputSentence" ref="textareaEl" v-model="inputSentence" autofocus :class="[status ? 'text-danger' : '']" :readonly="status">
+                    </textarea>
                 </div>
             </div>
             <div class="form-floating d-flex justify-content-between">
                 <div class="memo mb-2 text-danger">
-                    Backspace Key가 동작하지 않습니다.
+                    {{ pageType.inspection? '' : 'Backspace Key가 동작하지 않습니다.' }} 
                 </div>
                 <!--
                 <div class="d-flex justify-content-end mb-2 text-secondary">
@@ -36,8 +37,8 @@
                 <div class="d-flex justify-content-end gap-2">
                     <button class="btn btn-success hidden" @click="previous">이전 문장</button>
                     <button class="btn btn-success hidden" @click="next">다음 문장</button>
-                    <router-link class="btn btn-success" :to="{ name: 'main' }">작업 선택</router-link>
-                    <button class="btn btn-success" @click="onSubmit">다음 문장</button>
+                    <router-link class="common-button-blue" :to="{ name: 'main' }">작업 선택</router-link>
+                    <button class="common-button-green" @click="onSubmit">다음 문장</button>
                 </div>
             </div>
         </section>
@@ -50,7 +51,7 @@ import { watch } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import router from '@/pages/app/router'
 import { useRoute } from 'vue-router'
-import { getExpertData, postExpertData, getMegaData } from '@/api/work'
+import { getExpertData, postExpertData, postExpertInspectionData } from '@/api/work'
 
 export default {
     setup(){
@@ -60,7 +61,7 @@ export default {
             inspection: (route.query.inspection === 'true')
         } 
 
-        const sentence = ref([]),
+        const sentence = ref({}),
         nowSentence = ref(''),
         status = ref(false),
         inputSentence = ref(''),
@@ -71,29 +72,22 @@ export default {
         user = store.getters['user/GET_USER_INFO']
 
         const getData = () => {
-            const res = getExpertData()
+            const res = getExpertData(pageType)
 
             res.then(result => {
-                console.log(result)
-                if(result.data.result == 0){    
-                    status.value = true
-                    nowSentence.value = result.data.message 
-                } else {
-                    if(Array.isArray(result.data.result)){
-                        for(var i = 0; i < result.data.result.length; i++){
-                            result.data.result[i].error_sentence = ''
-                        }
-
-                        nowSentence.value = result.data.result[num.value].sentence
-
-                        sentence.value = result.data.result
-                    } else {
-                        nowSentence.value = result.data.result.sentence
-                        sentence.value.push(result.data.result)
-                    }
+                if(pageType.inspection){
+                    sentence.value = result.data.result
+                    nowSentence.value = result.data.result.cor_sentence
+                    inputSentence.value = result.data.result.sentence
+                } else { 
+                    nowSentence.value = result.data.result.sentence
+                    sentence.value = result.data.result
                 }
             }).catch(error => {
                 console.log(error)
+                status.value = true
+                nowSentence.value = '가져올 수 있는 문장이 없습니다.'
+                inputSentence.value = '가져올 수 있는 문장이 없습니다.'
             })
         }
 
@@ -118,56 +112,67 @@ export default {
         }
 
         const onSubmit = () => {
+            if(status.value) return
+            if(!sentence.value.error_sentence || sentence.value === '') return alert('제출할 수 없습니다.')
+            if(!sentence.value) return alert('제출할 수 없습니다.')
 
-            var variable = {
-                origin_id: sentence.value[0].id,
-                sentence: sentence.value[0].error_sentence,
-
-            }
-            if(!sentence.value.length) return alert('제출할 수 없습니다.')
-            
-            /*
-            for(var i = 0; i < sentence.value.length; i++){
-                if(sentence.value[i].error_sentence.trim()){ 
-                    variable.list.push({
-                        origin_id: sentence.value[i].id,
-                        sentence: sentence.value[i].error_sentence,
-                    })
-                } else {
-                    return alert('입력되지 않은 문장이 있습니다.')
+            if(!pageType.inspection){ // 수집
+                let variable = {
+                    origin_id: sentence.value.id,
+                    sentence: sentence.value.error_sentence,
+                    inspection: pageType.inspection
                 }
-            }
-            */
-        
-            const res = postExpertData(variable)
+   
+                const res = postExpertData(variable)
 
-            res.then(result => {
-                if(result.data.message === 'success'){
-                    // alert('작업을 완료하였습니다.')
-                    // router.push({ name: 'main' })
-                    getData()
-                    eraser()
+                res.then(result => {
+                    if(result.data.message === 'success'){
+                        getData()
+                        eraser()
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            } else { // 검수
+                let variable = {
+                    id: sentence.value.id,
+                    origin_id: sentence.value.origin_id,
+                    sentence: sentence.value.error_sentence,
+                    inspection: pageType.inspection
                 }
-            }).catch(error => {
-                console.log(error)
-            })
+
+                const res = postExpertData(variable)
+
+                res.then(result => {
+                    if(result.data.message === 'success'){
+                        getData()
+                        eraser()
+                    }
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
         }
 
         watch(num, () => {
-            nowSentence.value = sentence.value[num.value].sentence
-            inputSentence.value =  sentence.value[num.value].error_sentence 
+            nowSentence.value = sentence.value.sentence
+            inputSentence.value =  sentence.value.error_sentence 
         })
 
         watch(inputSentence, () => {
-            if(!sentence.value[num.value]) return
-            sentence.value[num.value].error_sentence = inputSentence.value
+            if(!sentence.value) return
+            sentence.value.error_sentence = inputSentence.value
         })
 
         const notUseBackspaceKey = (e) => {
+            if(pageType.inspection) return
             if(e.key === 'Backspace' || e.keyCode === 8) e.preventDefault()
+        }
+        
+        const enter = (e) => {
             if(e.key === 'Enter') {
                 e.preventDefault()
-                next()
+                onSubmit()
             }
         }
 
@@ -183,7 +188,8 @@ export default {
             onSubmit,
             notUseBackspaceKey,
             textareaEl,
-            pageType
+            pageType,
+            enter
         }
     }
 }

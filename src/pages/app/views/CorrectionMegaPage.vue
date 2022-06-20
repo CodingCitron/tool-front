@@ -21,16 +21,16 @@
         </div>
         <div class="form-floating d-flex flex-column">
           <div class="d-flex justify-content-end mb-2 text-secondary">
-            <span class="ps-1 pe-1">{{ corSentence.length }}</span>
-            <span>|</span>
             <span class="ps-1 pe-1">{{ errSentence.length }}</span>
+            <span>|</span>
+            <span class="ps-1 pe-1">{{ corSentence.length }}</span>
             <span>|</span>
             <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
           </div>
         </div>
         <div class="d-flex justify-content-end gap-2">
-            <router-link class="btn btn-success" :to="{ name: 'main' }">작업 선택</router-link>
-            <button class="btn btn-success" @click.prevent="textSubmit">다음 문장</button>
+            <router-link class="common-button-blue" :to="{ name: 'main' }">작업 선택</router-link>
+            <button class="common-button-green" @click.prevent="textSubmit">다음 문장</button>
         </div>
       </section>
     </div>
@@ -43,7 +43,7 @@
               v-bind="item" :key="item.id"
               :value="current"
               @input="changeTab"
-              />
+            />
           </div>
           <div>
               <input type="file" class="form-control hidden" @change="readFile">
