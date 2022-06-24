@@ -77,6 +77,14 @@ const routes = [
             import(/* webpackChunkName: "postExpertData" */ '../views/CorrectionExpertPage.vue'),
     },
     {
+        path: '/authoringtool/22/works/process-expert',
+        name: 'processExpertPage',
+        meta: { isLogin: true },
+        props: true,
+        component: () =>
+            import(/* webpackChunkName: "InputOriginSentence" */ '../views/ProcessExepertPage.vue'),
+    },
+    {
         path: '/authoringtool/22/works/process-sentence',
         name: 'processPage',
         meta: { isLogin: true },

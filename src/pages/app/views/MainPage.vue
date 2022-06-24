@@ -50,21 +50,19 @@ export default {
         hidden: false
       },
       {
-        title: '수집 - 스크립트 입력',
+        title: '수집 - 스크립터 입력(유핏)',
         content: '교정 문장을 보고 수집 문장을 입력',
         workGroup: 'ufit',
         link: 'correctionExpertPage',
         linkName: '작업하기',
-        inspection: false,
         hidden: false
       },
       {
-        title: '수집 - 검수 - 스크립트 입력',
+        title: '가공 - 스크립터 입력(유핏)',
         content: '수집 문장 검수',
         workGroup: 'ufit',
-        link: 'correctionExpertPage',
+        link: 'processExpertPage',
         linkName: '작업하기',
-        inspection: true,
         hidden: false
       },
       {

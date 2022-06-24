@@ -29,10 +29,16 @@
         </div>
         <div class="form-floating d-flex justify-content-between">
           <div>
-            <div :class="[pageType.inspection? '' : 'hidden']">
-              <select></select>
-              <select></select>
-              <select></select>
+            <div :class="[pageType.inspection? '' : 'hidden']" class="d-flex gap-2">
+              <select class="form-select" aria-label="Default select example">
+                <option v-for="item in option" :value="item.value">{{ item.name }}</option>
+              </select>
+              <select class="form-select" aria-label="Default select example">
+                <option v-for="item in option" :value="item.value">{{ item.name }}</option>             
+              </select>
+              <select class="form-select" aria-label="Default select example">
+                <option v-for="item in option" :value="item.value">{{ item.name }}</option>                
+              </select>
             </div>
           </div>
           <div class="d-flex justify-content-end mb-2 text-secondary">
@@ -142,6 +148,33 @@ export default {
     const pageType = { 
       inspection: (route.query.inspection === 'true')
     } 
+
+    const option = ref([
+      {
+        name: '근접 오류',
+        value: 'error_type_near'
+      },
+      {
+        name: '조사 오류',
+        value: 'error_type_post'
+      },
+      {
+        name: '유사 발음 오류',
+        value: 'error_type_pron'
+      },
+      {
+        name: '자음 동화 오류',
+        value: 'error_type_cons'
+      },
+      {
+        name: '띄어쓰기 오류',
+        value: 'error_type_spac'
+      },
+      {
+        name: '문장부호 오류',
+        value: 'error_type_mark'
+      }
+    ])
 
     const current = ref(1),
     tab = ref([
@@ -333,7 +366,8 @@ export default {
       csvSubmit,
       status,
       pageType,
-      grammalSentence
+      grammalSentence,
+      option
     }
   },
 }

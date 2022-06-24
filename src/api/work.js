@@ -18,6 +18,10 @@ function getExpertData(pageType){
 function postExpertData(inputData){
     return instance.post(`/works/post-expert-data`, inputData)
 }
+
+function getProcessExpertData(){
+    return instance.post('/works/get-porcess-expert-data')
+}
 // A - 2
 
 // C 
@@ -35,4 +39,4 @@ function inputCsv(inputData) {
     return instance.post('/works/post-csv', inputData)
 }
 
-export { postMegaData, inputCsv, getExpertData, postExpertData, getProcessData, postProcessData, getMegaData }
+export { postMegaData, inputCsv, getExpertData, postExpertData, getProcessData, postProcessData, getMegaData, getProcessExpertData }
