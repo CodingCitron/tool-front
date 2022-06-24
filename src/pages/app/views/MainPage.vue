@@ -96,7 +96,7 @@ export default {
 
       // 권한이 작업자고  ADMIN은 다 보임
       if(auth.includes('ADMIN')) return
-      if(group.value === 'saltluxInnovation' || group.value === 'notSelectGroup') return
+      if(group.value === 'saltluxInnovation' || group.value === '') return
       for(let i = 0; i < cardData.value.length; i++){
         if(group.value !== cardData.value[i].workGroup){
             cardData.value[i].hidden = true

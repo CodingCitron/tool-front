@@ -97,8 +97,8 @@
                             <ul class="pagination">
                                 <li class="page-item">
                                     <a class="page-link" @click="corSentencePaging.prev()" 
-                                    v-if="corSentencePaging.nowPage > corSentencePaging.viewPagelength"
-                                    >Previous</a>
+                                    v-show="corSentencePaging.value && (corSentencePaging.nowPage > corSentencePaging.viewPageLength)"
+                                    >이전</a>
                                 </li>
                                 <li class="page-item" 
                                     v-for="item in corSentencePaging.nowPagingBtn" 
@@ -111,9 +111,9 @@
                                 </li>
                                 <li class="page-item">
                                     <a class="page-link" @click="corSentencePaging.next()"
-                                    v-if="Math.ceil(corSentencePaging.nowPage/corSentencePaging.viewPageLength) 
-                                    < Math.ceil(corSentencePaging.pageSize/corSentencePaging.viewPageLength)"
-                                    >Next</a>
+                                    v-show="corSentencePaging.value && (Math.ceil(corSentencePaging.nowPage/corSentencePaging.viewPageLength) 
+                                    < Math.ceil(corSentencePaging.pageSize/corSentencePaging.viewPageLength))"
+                                    >다음</a>
                                 </li>
                             </ul>
                         </nav>
@@ -483,7 +483,6 @@ export default {
             if(corInputText.value === '') return alert('입력된 값이 없습니다.')
             
             var variable = {
-                id: user.userId,
                 sentence: corInputText.value,
                 group: 'expert'
             }

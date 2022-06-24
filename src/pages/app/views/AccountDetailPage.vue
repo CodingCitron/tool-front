@@ -149,7 +149,7 @@ export default {
                 var code = initData.value
 
                 userData.value.name = userInfo.user_name
-                userData.value.tel = userInfo.user_id
+                userData.value.tel = userInfo.hp_tel
                 userData.value.birth = userInfo.born_dt
                 userData.value.gender = userInfo.gender === code.M.m_code ? code.M.m_code : code.F.m_code
                 userData.value.auth = userInfo.auth.join(', ')

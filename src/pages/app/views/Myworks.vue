@@ -2,9 +2,9 @@
   <div class="container">
     <h3>현재 진행중 작업</h3>
     <div>
-        <table>
-
-        </table>
+        <div>
+            
+        </div>
     </div>
   </div>
 </template>

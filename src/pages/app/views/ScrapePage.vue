@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="container contents bg-light p-4 mb-5">
       <section>        
-        <h3 class="mb-4">{{ pageType.inspection? '검수 - ' : '수집 - ' }} 데이터 붙여넣기</h3>
+        <h3 class="mb-4">데이터 붙여넣기</h3>
          <div class="form-floating mb-3 d-flex flex-column">
           <div class="d-flex align-items-center mb-2">
             <label for="paste">수집 문장</label>
@@ -13,39 +13,23 @@
         </div>
         <div class="form-floating mb-3 d-flex flex-column">
           <div class="d-flex align-items-center mb-2">
-            <label>맞춤법 검사 진행 문장</label>
-          </div>
-          <div class="flex-grow-1">
-            <textarea :class="status? 'text-danger form-control' : 'form-control'" :disabled="status" readonly>{{ grammalSentence  }}</textarea>
-          </div>
-        </div>
-        <div class="form-floating mb-3 d-flex flex-column">
-          <div class="d-flex align-items-center mb-2">
             <label for="input">교정 문장</label>
           </div>
           <div class="flex-grow-1">
             <textarea :class="status? 'text-danger form-control' : 'form-control'" :disabled="status" placeholder="input(게시판 글 오류 수정하여 넣는 곳)" id="input" v-model="corSentence"></textarea>
           </div>
         </div>
-        <div class="form-floating d-flex justify-content-between">
-          <div>
-            <div :class="[pageType.inspection? '' : 'hidden']">
-              <select></select>
-              <select></select>
-              <select></select>
-            </div>
-          </div>
+        <div class="form-floating d-flex flex-column">
           <div class="d-flex justify-content-end mb-2 text-secondary">
-            <span class="ps-1 pe-1">{{ errSentence.length }}</span>
-            <span>|</span>
             <span class="ps-1 pe-1">{{ corSentence.length }}</span>
+            <span>|</span>
+            <span class="ps-1 pe-1">{{ errSentence.length }}</span>
             <span>|</span>
             <button class="text-button ps-1 pe-1 text-secondary" @click="eraser">지우기</button>
           </div>
         </div>
-        <div class="d-flex justify-content-end gap-2">
-            <router-link class="common-button-blue" :to="{ name: 'main' }">작업 선택</router-link>
-            <button class="common-button-green" @click.prevent="textSubmit">다음 문장</button>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-success" @click.prevent="textSubmit">제출하기</button>
         </div>
       </section>
     </div>
@@ -58,7 +42,7 @@
               v-bind="item" :key="item.id"
               :value="current"
               @input="changeTab"
-            />
+              />
           </div>
           <div>
               <input type="file" class="form-control hidden" @change="readFile">
@@ -126,10 +110,9 @@
 import { csvToJSON } from '@/util'
 import { ref } from '@vue/reactivity'
 import { computed, watch } from '@vue/runtime-core'
-import { postMegaData, inputCsv, getMegaData } from '@/api/work'
+import { scrape, inputCsv, getErrorSentence } from '@/api/work'
 import TabItem from '@/components/common/TabItem'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 
 export default {
   components: {
@@ -137,12 +120,6 @@ export default {
   },
 
   setup(){
-    const route = useRoute()
-
-    const pageType = { 
-      inspection: (route.query.inspection === 'true')
-    } 
-
     const current = ref(1),
     tab = ref([
       {
@@ -170,26 +147,24 @@ export default {
       getLength: 10,
       view: []
     }),
-    grammalSentence = ref(''),
 
     status = ref(false) 
 
     function getError(){
-      const res = getMegaData(pageType)
+      const res = getErrorSentence()
       res.then(result => {
         if(result.data && result.data.data){
           var data = result.data.data
           sentenceData.value = data
           errSentence.value = data.sentence
-          corSentence.value = ''
-          grammalSentence.value = data.temp_sentence
+          corSentence.value = data.temp_sentence
         }
       }).catch(error => {
           errSentence.value = '가져올 수 있는 문장이 없습니다.'
           corSentence.value = '가져올 수 있는 문장이 없습니다.'
-          grammalSentence.value = '가져올 수 있는 문장이 없습니다.'
 
           status.value = true
+          console.log(error)
       })
     }
 
@@ -200,6 +175,7 @@ export default {
       pagination.value.length = len
       pagination.value.pageLength = Math.ceil(len/pagination.value.getLength)
 
+      console.log(pagination.value)
       pagingBtn(pagination.value.nowPage)
     })
 
@@ -254,17 +230,16 @@ export default {
     }
 
     const textSubmit = () => {
-      if(status.value) return alert('제출할 수 없습니다.')
+      console.log(sentenceData.value)
       if(corSentence.value === '' || errSentence.value === '') return alert('텍스트를 입력해 주세요.')
 
       var variable = {
         id: sentenceData.value.id,
         corSentence: corSentence.value,
         errSentence: errSentence.value,
-        inspection: pageType.inspection
       } 
       
-      const res = postMegaData(variable)
+      const res = scrape(variable)
       
       res.then(result => {
         submittedText.value.unshift(variable)
@@ -282,6 +257,7 @@ export default {
 
     const eraser = () => {
       corSentence.value = ''
+      errSentence.value = ''
     }
 
     const csvSubmit = () => {    
@@ -331,9 +307,7 @@ export default {
       textSubmit,
       eraser,
       csvSubmit,
-      status,
-      pageType,
-      grammalSentence
+      status
     }
   },
 }
@@ -370,9 +344,5 @@ export default {
 .sticky-left{
   position: sticky;
   left: 0;
-}
-
-textarea {
-  resize: none;
 }
 </style>

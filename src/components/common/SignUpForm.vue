@@ -173,7 +173,7 @@ export default {
         return
       }
       
-      if(!tel.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)){
+      if(!tel.value.match(/^[0-9]{10,}/)){
         error.value = '전화번호를 올바르게 입력해주세요.'
         return
       }
@@ -189,7 +189,7 @@ export default {
       }
 
       if(manager.value !== ''){
-        if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)){
+        if(!manager.value.match(/^[0-9]{10,}/)){
           error.value = '매니저 전화번호를 올바르게 입력해주세요.'
           return
         }
@@ -211,7 +211,7 @@ export default {
         status: false
       }
 
-      if(!tel.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
+      if(!tel.value.match(/^[0-9]{10,}/)) return
       const variable = {
         userId: tel.value
       }
@@ -242,7 +242,7 @@ export default {
         status: false
       }
 
-      if(!manager.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) return
+      if(!manager.value.match(/^[0-9]{10,}/)) return
       const variable = {
         userId: manager.value
       }

@@ -1,5 +1,5 @@
 <template>
-    <div class="alert alert-success toast-box" role="alert">
+    <div class="alert alert-success toast-box hidden" role="alert">
     text
     </div>
 </template>

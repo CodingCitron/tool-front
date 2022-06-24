@@ -43,27 +43,6 @@ function copyObj(obj){ // 순환 참조에 사용하지 마세요.
     return copy
 }
 
-/*
-function getWesternAge(birth){
-    console.log(birth.substring(0, 4), 
-    birth.substring(4, 6), 
-    birth.substring(6, 8))
-    let birthday = new Date(
-        birth.substring(0, 4), 
-        birth.substring(4, 6), 
-        birth.substring(6, 8)
-        ),
-    today = new Date(),
-    thisYear = today.getFullYear(),
-    birthYear = birthday.getFullYear(),
-    yearAge = thisYear - birthYear,
-    thisBirth = birthday.setFullYear(thisYear)	//올해의 생일 timestamp로 반환
-    
-    if(today.getTime() > thisBirth) yearAge--
-    return yearAge
-}
-*/
-
 function getWesternAge(birth) {
     var date = new Date(),
     year = date.getFullYear(),
@@ -161,7 +140,7 @@ Pagination.prototype.calcProps = function(data, count){
     
     if(this.data.length > limit){ // 데이터를 한번에 받아 페이징 처리 
         this.pageSize = Math.ceil(this.data.length / limit)
-        this.start = Math.ceil(nowPage/limit) - 1
+        this.start = (Math.ceil(nowPage/limit) - 1) * limit
         this.end = Math.ceil(nowPage/limit) * limit
 
         this.nowData = this.data.slice((nowPage - 1) * limit, nowPage * limit)
@@ -188,14 +167,25 @@ Pagination.prototype.calcProps = function(data, count){
 Pagination.prototype.setPage = function(page){
     this.nowPage = page
     this.calcProps()
+    return this
 }
 
-Pagination.prototype.prev = function(page){
-    console.log('prev')
+Pagination.prototype.prev = function(){
+    var page = this.nowPage - this.limit
+
+    this.nowPage = page < 0?
+    0 : page 
+
+    this.calcProps()
 }
 
-Pagination.prototype.next = function(page){
-    console.log('next')
+Pagination.prototype.next = function(){
+    var page = this.nowPage + this.limit
+
+    this.nowPage = page >= this.pageSize? 
+    this.pageSize : this.nowPage + this.viewPageLength
+
+    this.calcProps()
 }
 
 export {

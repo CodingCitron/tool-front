@@ -339,11 +339,7 @@ export default {
         })
 
         function xmlParse(errText, processData){
-            let errorSentenceArea,
-            text,
-            xml,
-            html,
-            array
+            let errorSentenceArea, text, xml, html, array
 
             if(!processData){
                 errorSentenceArea = document.getElementById('errorSentenceArea')
@@ -372,7 +368,7 @@ export default {
                 html = html.replace(/<(\/sentence|sentence)([^>]*)>/gi, '')
 
                 array = html.match(/<span[^>]*>/gi)
-                console.log(array)
+
                 for(let i = 0; i < array.length; i++){
                     html = html.replace(
                         array[i], 
@@ -422,11 +418,31 @@ export default {
                 nextTick(() => {
                     let errorSentenceArea = document.getElementById('errorSentenceArea')
                     errorSentenceArea.innerHTML = html
-                })
-            }
 
-            console.log(xml)
-            console.log(html)
+                    let spans = errorSentenceArea.querySelectorAll('span')
+
+                    for(let i = 0; i < spans.length; i++){
+                        spans[i].style.color = 'white'
+
+                        for(let j = 0; j < options.value.length; j++){
+                            if(!options.value[j].errorName) continue
+                            if(options.value[j].errorName == spans[i].dataset.error) {
+                                spans[i].style.background = options.value[j].background
+
+                                senteceObj.value[options.value[j].columnName]++
+
+                                selectedText.value.button.push({
+                                    title: options.value[j].errorName,
+                                    id: spans[i].dataset.spanId,
+                                    name: spans[i].textContent
+                                })
+
+                                break
+                            }
+                        } // for
+                    } // for
+                }) // nextTick
+            }
         }
 
         function removeOneSpan(id){
@@ -441,7 +457,6 @@ export default {
         }
 
         function onSubmitHandler(){
-            // console.log('onSubmitHandler')
             const variable = {
                 id: senteceObj.value.id,
                 error_type_near: senteceObj.value.error_type_near,
@@ -454,11 +469,11 @@ export default {
             }
 
             variable.processJson = JSON.stringify({xml: selectedText.value.xmlData})
-
+            variable.inspection = pageType.inspection
+            
             const res = postProcessData(variable)
 
             res.then(result => {
-                // console.log(result)
                 if(result.data.message === 'success'){
                     getSentence()
                 }
