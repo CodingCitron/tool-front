@@ -20,7 +20,11 @@ function postExpertData(inputData){
 }
 
 function getProcessExpertData(){
-    return instance.post('/works/get-porcess-expert-data')
+    return instance.post('/works/get-process-expert-data')
+}
+
+function postProcessExpertData(sentence){
+    return instance.post('/works/post-process-expert-data', sentence)
 }
 // A - 2
 
@@ -39,4 +43,4 @@ function inputCsv(inputData) {
     return instance.post('/works/post-csv', inputData)
 }
 
-export { postMegaData, inputCsv, getExpertData, postExpertData, getProcessData, postProcessData, getMegaData, getProcessExpertData }
+export { postMegaData, inputCsv, getExpertData, postExpertData, getProcessData, postProcessData, getMegaData, getProcessExpertData, postProcessExpertData }

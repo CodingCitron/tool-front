@@ -2,14 +2,13 @@
 
   <div class="container">
     <div class="row">
-      <div class="p-2 col-xxl-3 col-xl-4 col-lg-4 col-md-6" v-for="item in cardData"> <!-- A-1 -->
+      <div class="p-2 col-xxl-3 col-xl-4 col-lg-4 col-md-6" v-for="item in cardData" :hidden="item.hidden"> <!-- A-1 -->
         <Card :title="item.title" 
               :content="item.content" 
               :link="item.link"
               :workGroup="item.workGroup" 
               :linkName="item.linkName"
               :inspection="item.inspection"
-              :hidden="item.hidden"
         />
       </div>
     </div>
@@ -34,20 +33,20 @@ export default {
       {
         title: '수집 - 데이터 붙여넣기',
         content: '교정 문장 입력',
-        workGroup: 'ufit',
+        workGroup: 'megastudy',
         link: 'correctionMegaPage',
         linkName: '작업하기',
         inspection: false,
-        hidden: false
+        hidden: false,
       },
       {
         title: '수집 - 검수 - 데이터 붙여넣기',
         content: '교정 문장 검수',
-        workGroup: 'ufit',
+        workGroup: 'megastudy',
         link: 'correctionMegaPage',
         linkName: '작업하기',
         inspection: true,
-        hidden: false
+        hidden: false,
       },
       {
         title: '수집 - 스크립터 입력(유핏)',
@@ -55,7 +54,8 @@ export default {
         workGroup: 'ufit',
         link: 'correctionExpertPage',
         linkName: '작업하기',
-        hidden: false
+        hidden: false,
+        auth: 'WORKER'
       },
       {
         title: '가공 - 스크립터 입력(유핏)',
@@ -63,7 +63,8 @@ export default {
         workGroup: 'ufit',
         link: 'processExpertPage',
         linkName: '작업하기',
-        hidden: false
+        hidden: false,
+        auth: 'MANAGER'
       },
       {
         title: '가공 - 스크립트 가공',
@@ -91,13 +92,18 @@ export default {
     resUser.then(result => {
       group.value = result.data.userInfo.group
       const auth = result.data.userInfo.auth
-
       // 권한이 작업자고  ADMIN은 다 보임
       if(auth.includes('ADMIN')) return
       if(group.value === 'saltluxInnovation' || group.value === '') return
       for(let i = 0; i < cardData.value.length; i++){
-        if(group.value !== cardData.value[i].workGroup){
+        // console.log(group.value !== cardData.value[i].workGroup)
+        // console.log(!auth.includes(cardData.value[i].auth))
+        if(group.value !== cardData.value[i].workGroup || !auth.includes(cardData.value[i].auth)) {
             cardData.value[i].hidden = true
+        } 
+
+        if(auth.includes('MANAGER') && cardData.value[i].auth === 'WORKER'){ // 매니저는 작업자 못 봄
+          cardData.value[i].hidden = true
         } 
       }
 
