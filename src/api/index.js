@@ -10,7 +10,7 @@ const instance = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
 })
 
-console.log(process.env.VUE_APP_API_URL)
+console.log(process.env)
 
 instance.interceptors.request.use(async function(config){
     config.headers['Authorization'] = store.getters['user/GET_ACCESS_TOKEN']
