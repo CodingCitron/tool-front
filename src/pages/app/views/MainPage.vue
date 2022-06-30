@@ -38,6 +38,7 @@ export default {
         linkName: '작업하기',
         inspection: false,
         hidden: false,
+        auth: 'WORKER'
       },
       {
         title: '수집 - 검수 - 데이터 붙여넣기',
@@ -47,6 +48,7 @@ export default {
         linkName: '작업하기',
         inspection: true,
         hidden: false,
+        auth: 'WORKER'
       },
       {
         title: '수집 - 스크립터 입력(유핏)',
@@ -73,7 +75,8 @@ export default {
         link: 'processPage',
         linkName: '작업하기',
         inspection: false,
-        hidden: false
+        hidden: false,
+        auth: 'WORKER'
       },
       {
         title: '가공 - 검수 - 스크립트 가공',
@@ -82,7 +85,8 @@ export default {
         link: 'processPage',
         linkName: '작업하기',
         inspection: true,
-        hidden: false
+        hidden: false,
+        auth: 'WORKER'
       },
     ])
 
@@ -93,6 +97,8 @@ export default {
       group.value = result.data.userInfo.group
       const auth = result.data.userInfo.auth
       // 권한이 작업자고  ADMIN은 다 보임
+
+      console.log(group.value)
       if(auth.includes('ADMIN')) return
       if(group.value === 'saltluxInnovation' || group.value === '') return
       for(let i = 0; i < cardData.value.length; i++){

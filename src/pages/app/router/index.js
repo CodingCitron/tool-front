@@ -22,13 +22,6 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "AccountDetailPage" */ '../views/AccountDetailPage.vue'),
     },
-    //{
-    //    path: '/authoringtool/22/mypage',
-    //    name: 'mypage',
-    //    meta: { isLogin: true },
-    //    component: () =>
-    //        import(/* webpackChunkName: "InputOriginSentence" */ '../views/Mypage.vue'),
-    //},
     {
         path: '/authoringtool/22/myworks',
         name: 'myworks',

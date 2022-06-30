@@ -1,6 +1,7 @@
 import instance from './index'
 
 // 문장관리 탭
+//authoring/22
 function postMegaExcel(data){
     return instance.post('/manage/post-mega-excel', data)
 }
@@ -25,3 +26,4 @@ function getUserData(limit){
 // 작업자 탭
 
 export { postMegaExcel, postExpertExcel, getSentence, postExpertSentence, getUserData }
+
